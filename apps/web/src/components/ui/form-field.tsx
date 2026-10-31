@@ -26,20 +26,20 @@ export const FormField: React.FC<FormFieldProps> = ({
       {label && (
         <label
           htmlFor={htmlFor}
-          className="text-xs font-semibold uppercase tracking-wider text-academic-slate flex items-center justify-between"
+          className="text-xs font-semibold text-slate-800 flex items-center justify-between"
         >
           <span>
             {label}
-            {required && <span className="text-academic-status-danger ml-1">*</span>}
+            {required && <span className="text-red-500 ml-1">*</span>}
           </span>
         </label>
       )}
       {children}
       {hint && !error && (
-        <p className="text-xs text-academic-muted">{hint}</p>
+        <p className="text-xs text-slate-500">{hint}</p>
       )}
       {error && (
-        <p className="text-xs text-academic-status-danger flex items-center gap-1 font-medium mt-0.5">
+        <p className="text-xs text-red-600 flex items-center gap-1 font-medium mt-0.5">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           <span>{error}</span>
         </p>

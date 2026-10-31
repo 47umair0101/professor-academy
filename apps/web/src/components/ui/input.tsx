@@ -12,7 +12,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative w-full">
         {leftIcon && (
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-academic-slate">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             {leftIcon}
           </div>
         )}
@@ -21,18 +21,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           disabled={disabled}
           className={cn(
-            'flex h-10 w-full rounded-academic bg-white px-3.5 py-2 text-sm text-academic-charcoal placeholder:text-academic-muted border transition-colors duration-150',
-            'border-academic-border focus:border-academic-gold focus:ring-1 focus:ring-academic-gold focus:outline-none',
-            'disabled:cursor-not-allowed disabled:bg-academic-cream-subtle disabled:opacity-70',
+            'flex h-10 w-full rounded-lg bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 border transition-all duration-150',
+            'border-slate-200 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none shadow-sm',
+            'disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-60',
             leftIcon && 'pl-10',
             rightIcon && 'pr-10',
-            error && 'border-academic-status-danger focus:border-academic-status-danger focus:ring-academic-status-danger',
+            error && 'border-red-500 focus:border-red-500 focus:ring-red-500/10',
             className
           )}
           {...props}
         />
         {rightIcon && (
-          <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-academic-slate">
+          <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
             {rightIcon}
           </div>
         )}

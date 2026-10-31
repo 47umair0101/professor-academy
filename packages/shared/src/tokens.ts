@@ -1,72 +1,78 @@
 /**
- * Professor Academy - Design System Tokens
+ * Professor Academy - Modern Academic Design System Tokens
+ * An elevated, minimal, and premium aesthetic superior to legacy LMS platforms
  * Shared across Web (Tailwind CSS) & Mobile (NativeWind)
- * Strictly follows the Anti-"Vibe-Coded" Academic Aesthetic
  */
 
 export const brandColors = {
-  // Primary Academic Brand
-  navy: {
-    DEFAULT: '#1A2451',
-    deep: '#111838',
-    light: '#28377A',
-    surface: '#EAEFF9',
-    subtle: '#F4F6FC',
+  // Primary Authority & Ink
+  primary: {
+    DEFAULT: '#0F172A', // Deep Obsidian Slate
+    hover: '#1E293B',
+    active: '#020617',
+    surface: '#F8FAFC',
   },
-  // Secondary Heritage Accent
+  // Signature Academic Accent (Modern Royal Indigo)
+  accent: {
+    DEFAULT: '#4F46E5', // Electric Royal Indigo
+    hover: '#4338CA',
+    active: '#3730A3',
+    light: '#6366F1',
+    surface: '#EEF2FF',
+    subtle: '#F5F7FF',
+  },
+  // Heritage Honor & Achievement (Warm Amber Gold)
   gold: {
-    DEFAULT: '#C59B27',
-    hover: '#A37E1C',
-    light: '#E5C058',
-    surface: '#FDF8EB',
-    subtle: '#FFFDF9',
+    DEFAULT: '#D97706', // Warm Amber Gold
+    hover: '#B45309',
+    surface: '#FEF3C7',
+    text: '#92400E',
+    star: '#F59E0B',
   },
-  // Soft Rose-Gold Secondary
-  roseGold: {
-    DEFAULT: '#B8868B',
-    hover: '#9E6C71',
-    surface: '#F9EFF0',
-    subtle: '#FCF7F7',
-  },
-  // Backgrounds & Canvas
+  // Backgrounds & Surfaces
   canvas: {
-    cream: '#FAF9F6', // Main Warm Cream canvas
-    white: '#FFFFFF', // Clean White cards/surfaces
-    subtle: '#F5F4EE', // Slightly tinted section divider
+    white: '#FFFFFF', // Clean White cards & containers
+    subtle: '#F8F9FA', // Modern off-white background
+    hover: '#F1F5F9',
   },
-  // Structural Borders
+  // Clean Modern Structural Borders
   border: {
-    DEFAULT: '#E5E3DC',
-    light: '#EFECE6',
-    dark: '#D0CDC4',
+    DEFAULT: '#E2E8F0', // Slate 200
+    light: '#F1F5F9',   // Slate 100
+    dark: '#CBD5E1',    // Slate 300
+    focus: '#4F46E5',
   },
-  // Text & Ink
+  // Text & Typography
   text: {
-    charcoal: '#222222', // Primary reading ink
-    slate: '#5A6072',    // Secondary subtext
-    muted: '#8C93A4',    // Timestamps & disabled placeholders
-    inverse: '#FFFFFF',  // Text on Navy/Dark
+    primary: '#0F172A',   // Slate 900
+    secondary: '#475569', // Slate 600
+    muted: '#94A3B8',     // Slate 400
+    inverse: '#FFFFFF',
   },
-  // Semantic Status Colors
+  // Status Colors
   status: {
     success: {
-      DEFAULT: '#15803D',
-      bg: '#DCFCE7',
+      DEFAULT: '#16A34A',
+      surface: '#DCFCE7',
+      text: '#15803D',
       border: '#BBF7D0',
     },
     warning: {
-      DEFAULT: '#B45309',
-      bg: '#FEF3C7',
+      DEFAULT: '#D97706',
+      surface: '#FEF3C7',
+      text: '#92400E',
       border: '#FDE68A',
     },
     danger: {
-      DEFAULT: '#B91C1C',
-      bg: '#FEE2E2',
+      DEFAULT: '#DC2626',
+      surface: '#FEE2E2',
+      text: '#B91C1C',
       border: '#FECACA',
     },
     info: {
-      DEFAULT: '#1D4ED8',
-      bg: '#DBEAFE',
+      DEFAULT: '#2563EB',
+      surface: '#EFF6FF',
+      text: '#1D4ED8',
       border: '#BFDBFE',
     },
   },
@@ -74,14 +80,14 @@ export const brandColors = {
 
 export const typography = {
   fonts: {
-    heading: 'Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    body: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    mono: '"JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace',
+    sans: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    mono: '"JetBrains Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace',
   },
   weights: {
     regular: '400',
     medium: '500',
     semibold: '600',
     bold: '700',
+    extrabold: '800',
   },
 } as const;

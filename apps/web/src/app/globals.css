@@ -3,46 +3,45 @@
 @tailwind utilities;
 
 :root {
-  --background: #FAF9F6;
-  --foreground: #222222;
-  --card-border: #E5E3DC;
+  --background: #FFFFFF;
+  --foreground: #0F172A;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Academic Custom Scrollbars */
+/* Modern Minimal Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF9F6;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D0CDC4;
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1A2451;
+  background: #94A3B8;
 }
 
-/* Academic Focus Rings */
+/* Modern Accessible Focus Rings */
 *:focus-visible {
-  outline: 2px solid #C59B27;
+  outline: 2px solid #4F46E5;
   outline-offset: 2px;
 }
 
 /* Selection Color */
 ::selection {
-  background: #FDF8EB;
-  color: #1A2451;
+  background: #EEF2FF;
+  color: #4338CA;
 }

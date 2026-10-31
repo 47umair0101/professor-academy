@@ -29,11 +29,17 @@
 - Created root `.gitignore`, `.env.example`, and Turborepo configuration (`pnpm-workspace.yaml`, `turbo.json`, root `package.json`).
 - Established shared packages (`packages/shared` for tokens, constants, and Zod schemas).
 - Setup Next.js 15 App Router web application in `apps/web`.
-- Implemented Professor Academy Design System:
-  - Primary Academic Navy (`#1A2451`)
-  - Heritage Gold (`#C59B27`)
-  - Soft Rose-Gold (`#B8868B`)
-  - Warm Cream Canvas (`#FAF9F6`)
-  - Crisp 1px `#E5E3DC` borders & Charcoal Ink typography
-- Built core UI component library: Buttons, Inputs, Badges, Cards, Modals, Data Tables, Navbar, Footer.
-- Deployed interactive showcase route at `/design-preview`.
+- Elevated and modernized the design system beyond legacy platforms (Udemy):
+  - Deep Obsidian Slate (`#0F172A`) for high-contrast primary authority
+  - Signature Electric Royal Indigo (`#4F46E5`) for modern focus & interaction
+  - Amber Gold (`#D97706`) for verified achievements & bestseller badges
+  - Crisp White cards (`#FFFFFF`) with subtle slate borders (`#E2E8F0`) and smooth modern elevation
+  - Inter & JetBrains Mono typography with zero external build-time network dependencies
+- Built modern component library:
+  - High-Yield `CourseCard` with 16:9 thumbnail, verified instructor mark, ratings, PKR pricing, and dedicated **Eligibility Criteria Snippet**
+  - Buttons (Indigo primary, Obsidian dark, bordered secondary, outline, ghost, danger) with active scale press states
+  - Badges, Form Controls (Inputs, Selects, Textareas, FormField)
+  - Accessible Modal Dialog & Administrative Fee Verification Data Table
+  - Modern floating-feel Navbar with Command-K search bar & quick Role Simulator
+  - Dark Slate Footer with Pakistani payment method badges (Meezan, JazzCash, Easypaisa)
+- Deployed interactive showcase at `/design-preview` and homepage at `/`.

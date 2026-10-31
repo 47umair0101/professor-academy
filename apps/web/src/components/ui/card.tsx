@@ -10,8 +10,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={cn(
-        'rounded-academic border border-academic-border bg-white text-academic-charcoal shadow-subtle transition-all duration-200',
-        interactive && 'hover:shadow-cardHover hover:border-academic-border-dark cursor-pointer',
+        'rounded-xl border border-slate-200/90 bg-white text-slate-900 shadow-subtle transition-all duration-200',
+        interactive && 'hover:shadow-cardHover hover:border-slate-300 hover:-translate-y-0.5 cursor-pointer',
         className
       )}
       {...props}
@@ -26,7 +26,7 @@ export const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex flex-col space-y-1.5 p-6 border-b border-academic-border/60', className)}
+    className={cn('flex flex-col space-y-1.5 p-5 border-b border-slate-100', className)}
     {...props}
   />
 ));
@@ -39,7 +39,7 @@ export const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      'font-heading font-semibold text-lg leading-tight text-academic-navy tracking-tight',
+      'font-semibold text-base leading-snug text-slate-900 tracking-tight',
       className
     )}
     {...props}
@@ -53,7 +53,7 @@ export const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-sm text-academic-slate leading-relaxed', className)}
+    className={cn('text-xs text-slate-500 leading-normal', className)}
     {...props}
   />
 ));
@@ -63,7 +63,7 @@ export const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('p-6', className)} {...props} />
+  <div ref={ref} className={cn('p-5', className)} {...props} />
 ));
 CardContent.displayName = 'CardContent';
 
@@ -74,7 +74,7 @@ export const CardFooter = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'flex items-center justify-between p-6 pt-4 border-t border-academic-border/60 bg-academic-cream/40 rounded-b-academic',
+      'flex items-center justify-between p-5 pt-3.5 border-t border-slate-100 bg-slate-50/50 rounded-b-xl',
       className
     )}
     {...props}
