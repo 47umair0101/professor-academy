@@ -4,12 +4,11 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useAuth, SEED_ACCOUNTS } from '@/lib/auth/auth-context';
 import { AuthBrandHeader, AuthIllustrationCard } from '@/components/auth/auth-illustration';
-import { Button } from '@/components/ui/button';
-import { ShieldCheck, Check, Sparkles } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
 import type { UserRole } from '@professor-academy/shared';
 
 export default function LoginPage() {
-  const { login, demoLogin, isLoading } = useAuth();
+  const { login, isLoading } = useAuth();
   const [emailOrPhone, setEmailOrPhone] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -51,7 +50,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 lg:p-12">
+    <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Side: Brand & Hero Illustration */}
         <div className="space-y-6 max-w-lg mx-auto lg:mx-0">
@@ -72,18 +71,18 @@ export default function LoginPage() {
         {/* Right Side: Clean White Floating Auth Card */}
         <div className="flex flex-col items-center w-full max-w-md mx-auto">
           {/* Quick Demo Credentials Bar for Easy Evaluation */}
-          <div className="w-full mb-3 flex items-center justify-between bg-white border border-slate-200/90 rounded-xl p-2 px-3 text-xs shadow-sm">
+          <div className="w-full mb-3 flex items-center justify-between bg-white border border-slate-200/90 rounded-xl p-2 px-3 text-xs shadow-subtle">
             <span className="font-semibold text-slate-600 flex items-center gap-1">
-              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+              <Sparkles className="h-3.5 w-3.5 text-brand-indigo" />
               1-Click Demo:
             </span>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => handleQuickFill('STUDENT')}
-                className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   selectedRole === 'STUDENT'
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-brand-indigo text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -92,9 +91,9 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => handleQuickFill('TEACHER')}
-                className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   selectedRole === 'TEACHER'
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-brand-indigo text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -103,9 +102,9 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => handleQuickFill('ADMIN')}
-                className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   selectedRole === 'ADMIN'
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-brand-indigo text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -115,7 +114,7 @@ export default function LoginPage() {
           </div>
 
           {/* Main Login Card */}
-          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-sm p-7 sm:p-8 space-y-6">
+          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-card p-7 sm:p-8 space-y-6">
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">
                 {selectedRole === 'STUDENT'
@@ -145,7 +144,7 @@ export default function LoginPage() {
                   value={emailOrPhone}
                   onChange={(e) => setEmailOrPhone(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                  className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                   required
                 />
               </div>
@@ -159,7 +158,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                  className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                   required
                 />
               </div>
@@ -171,24 +170,24 @@ export default function LoginPage() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-slate-300 text-brand-indigo focus:ring-brand-indigo"
                   />
                   <span>Remember me</span>
                 </label>
 
                 <Link
                   href="/forgot-password"
-                  className="text-blue-600 font-semibold hover:underline"
+                  className="text-brand-indigo font-semibold hover:text-brand-indigoHover hover:underline"
                 >
                   Forgot password?
                 </Link>
               </div>
 
-              {/* Login Button */}
+              {/* Primary Action Button (Matches Homepage Royal Indigo) */}
               <button
                 type="submit"
                 disabled={submitting || isLoading}
-                className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-lg bg-brand-indigo hover:bg-brand-indigoHover active:bg-[#3730A3] text-white font-semibold text-sm transition-all shadow-subtle hover:shadow-card disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {submitting ? 'Authenticating...' : 'Login'}
               </button>
@@ -196,7 +195,7 @@ export default function LoginPage() {
 
             <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
               New student?{' '}
-              <Link href="/signup" className="text-blue-600 font-semibold hover:underline">
+              <Link href="/signup" className="text-brand-indigo font-semibold hover:text-brand-indigoHover hover:underline">
                 Create an account
               </Link>
             </div>

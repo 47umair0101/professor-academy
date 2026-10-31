@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 lg:p-12">
+    <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Side: Brand & Hero Illustration */}
         <div className="space-y-6 max-w-lg mx-auto lg:mx-0">
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
 
         {/* Right Side: Reset Form Card */}
         <div className="w-full max-w-md mx-auto">
-          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-sm p-7 sm:p-8 space-y-6">
+          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-card p-7 sm:p-8 space-y-6">
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">
                 Forgot password?
@@ -71,7 +71,7 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="student@example.pk"
-                    className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-lg bg-brand-indigo hover:bg-brand-indigoHover active:bg-[#3730A3] text-white font-semibold text-sm transition-all shadow-subtle hover:shadow-card disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {submitting ? 'Sending Link...' : 'Send Reset Link'}
                 </button>
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center pt-2 border-t border-slate-100 text-xs">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1.5 text-blue-600 font-semibold hover:underline"
+                className="inline-flex items-center gap-1.5 text-brand-indigo font-semibold hover:text-brand-indigoHover hover:underline"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 <span>Back to login</span>

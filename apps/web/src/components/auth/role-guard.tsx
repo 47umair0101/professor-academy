@@ -41,7 +41,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) 
           </p>
           <Button
             variant="primary"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full"
             onClick={() => router.push('/login')}
           >
             Go to Login
@@ -61,11 +61,11 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) 
           </div>
           <h2 className="text-lg font-bold text-slate-900">Access Restricted (403)</h2>
           <p className="text-xs text-slate-500 leading-relaxed">
-            You are currently signed in as <span className="font-semibold text-slate-800">{user.email}</span> with the <span className="font-bold text-slate-900">{role}</span> role. This section requires <span className="font-semibold text-blue-600">{allowedRoles.join(' or ')}</span> authorization.
+            You are currently signed in as <span className="font-semibold text-slate-800">{user.email}</span> with the <span className="font-bold text-slate-900">{role}</span> role. This section requires <span className="font-semibold text-brand-indigo">{allowedRoles.join(' or ')}</span> authorization.
           </p>
           <Button
             variant="primary"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full"
             onClick={() => router.push(`/${role.toLowerCase()}/dashboard`)}
             rightIcon={<ArrowRight className="h-4 w-4" />}
           >

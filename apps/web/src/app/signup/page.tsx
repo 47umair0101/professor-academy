@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
 import { AuthBrandHeader, AuthIllustrationCard } from '@/components/auth/auth-illustration';
-import { ChevronDown, ShieldCheck } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { COURSE_CATEGORIES } from '@professor-academy/shared';
 
 export default function SignupPage() {
@@ -80,13 +80,13 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 lg:p-12">
+    <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Side: Floating Sign Up Form Card */}
         <div className="w-full max-w-lg mx-auto lg:mx-0">
           <AuthBrandHeader />
 
-          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-sm p-7 sm:p-8 space-y-5">
+          <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-card p-7 sm:p-8 space-y-5">
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">
                 Create your account
@@ -113,7 +113,7 @@ export default function SignupPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Muhammad Ali"
-                  className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                  className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                   required
                 />
               </div>
@@ -129,7 +129,7 @@ export default function SignupPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -143,7 +143,7 @@ export default function SignupPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+92 300 0000000"
-                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -160,7 +160,7 @@ export default function SignupPage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Lahore"
-                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -173,7 +173,7 @@ export default function SignupPage() {
                     <select
                       value={program}
                       onChange={(e) => setProgram(e.target.value)}
-                      className="w-full h-10 px-3.5 pr-8 text-sm rounded-lg border border-slate-200 bg-white appearance-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                      className="w-full h-10 px-3.5 pr-8 text-sm rounded-lg border border-slate-200 bg-white appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                       required
                     >
                       <option value="">Choose a program</option>
@@ -199,7 +199,7 @@ export default function SignupPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function SignupPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+                    className="w-full h-10 px-3.5 text-sm rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 focus:outline-none transition-all shadow-sm"
                     required
                   />
                 </div>
@@ -226,16 +226,16 @@ export default function SignupPage() {
                     type="checkbox"
                     checked={agreed}
                     onChange={(e) => setAgreed(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-indigo focus:ring-brand-indigo"
                     required
                   />
                   <span>
                     I agree to the{' '}
-                    <Link href="/terms" className="text-blue-600 hover:underline">
+                    <Link href="/terms" className="text-brand-indigo font-medium hover:underline">
                       terms and conditions
                     </Link>{' '}
                     and{' '}
-                    <Link href="/privacy" className="text-blue-600 hover:underline">
+                    <Link href="/privacy" className="text-brand-indigo font-medium hover:underline">
                       privacy policy
                     </Link>
                     .
@@ -243,11 +243,11 @@ export default function SignupPage() {
                 </label>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit Button (Matching Royal Indigo) */}
               <button
                 type="submit"
                 disabled={submitting || isLoading}
-                className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-lg bg-brand-indigo hover:bg-brand-indigoHover active:bg-[#3730A3] text-white font-semibold text-sm transition-all shadow-subtle hover:shadow-card disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {submitting ? 'Creating Account...' : 'Create Account'}
               </button>
@@ -255,7 +255,7 @@ export default function SignupPage() {
 
             <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 font-semibold hover:underline">
+              <Link href="/login" className="text-brand-indigo font-semibold hover:text-brand-indigoHover hover:underline">
                 Login
               </Link>
             </div>
