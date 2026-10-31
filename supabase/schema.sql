@@ -283,27 +283,34 @@ ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.past_papers ENABLE ROW LEVEL SECURITY;
 
 -- Profiles Policies
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 CREATE POLICY "Users can update their own profile" ON public.profiles
   FOR UPDATE USING (auth.uid() = id);
 
 -- Courses Policies
+DROP POLICY IF EXISTS "Published courses are viewable by everyone" ON public.courses;
 CREATE POLICY "Published courses are viewable by everyone" ON public.courses
   FOR SELECT USING (status = 'PUBLISHED' OR auth.uid() = teacher_id);
 
+DROP POLICY IF EXISTS "Teachers can insert and update their own courses" ON public.courses;
 CREATE POLICY "Teachers can insert and update their own courses" ON public.courses
   FOR ALL USING (auth.uid() = teacher_id);
 
 -- Enrollments Policies
+DROP POLICY IF EXISTS "Students can view their own enrollments" ON public.enrollments;
 CREATE POLICY "Students can view their own enrollments" ON public.enrollments
   FOR SELECT USING (auth.uid() = student_id);
 
+DROP POLICY IF EXISTS "Students can create enrollment requests" ON public.enrollments;
 CREATE POLICY "Students can create enrollment requests" ON public.enrollments
   FOR INSERT WITH CHECK (auth.uid() = student_id);
 
 -- Past Papers Policies
+DROP POLICY IF EXISTS "Past papers are viewable by everyone" ON public.past_papers;
 CREATE POLICY "Past papers are viewable by everyone" ON public.past_papers
   FOR SELECT USING (true);
 
