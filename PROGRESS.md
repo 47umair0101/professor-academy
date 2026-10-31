@@ -19,7 +19,7 @@
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, Tiptap academic editor with image upload, thumbnail file uploader & presets, Gemini AI Co-Pilot | ✅ Completed | ✅ All Passed | `5fdced7` / `740715f` |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini Vision OCR receipt scanner, Admin verification queue, Student fee history | ✅ Completed | ✅ All Passed | `6d2bd1d` |
 | **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ✅ Completed | ✅ All Passed | `9db5b0a` |
-| **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ✅ Completed | ✅ All Passed | `Pending Push` |
+| **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ✅ Completed | ✅ All Passed | `38de05f` |
 | **9** | **React Native (Expo) Mobile App** | Cross-platform Student, Teacher & Admin mobile experience with NativeWind | ⚪ Pending | ⚪ Pending | - |
 | **10** | **E2E Testing, Security Audit & Final Handover** | Full test suite, RLS verification, 10,000+ scale check, production documentation | ⚪ Pending | ⚪ Pending | - |
 
