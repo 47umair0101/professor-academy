@@ -190,15 +190,15 @@ export default function AdminDashboardPage() {
 
             {/* Academy Brand Logo */}
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
-                <ShieldCheck className="h-5 w-5 stroke-[2.2] text-amber-400" />
+              <div className="h-9 w-9 rounded-xl bg-brand-indigo text-white flex items-center justify-center shadow-xs">
+                <ShieldCheck className="h-5 w-5 stroke-[2.2]" />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-sm sm:text-base leading-none text-slate-900 tracking-tight">
                   Professor Online
                 </span>
-                <span className="text-[10px] text-rose-600 font-bold tracking-wider uppercase">
-                  ADMIN SUPERUSER CENTER
+                <span className="text-[10px] text-brand-indigo font-bold tracking-wider uppercase">
+                  ADMIN PORTAL
                 </span>
               </div>
             </Link>
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
             >
               <Bell className="h-5 w-5 text-slate-800 stroke-[2.2]" />
               {feeRequests.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs ring-2 ring-white">
+                <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shadow-xs ring-2 ring-white">
                   {feeRequests.length}
                 </span>
               )}
@@ -234,15 +234,15 @@ export default function AdminDashboardPage() {
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer select-none"
               >
-                <div className="h-9 w-9 rounded-full bg-slate-900 text-amber-400 flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-slate-200">
+                <div className="h-9 w-9 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100">
                   ADM
                 </div>
                 <div className="hidden sm:flex flex-col text-left">
                   <span className="text-xs font-bold text-slate-900 leading-tight">
-                    {user?.fullName || 'Super Administrator'}
+                    {user?.fullName || 'Executive Administrator'}
                   </span>
-                  <span className="text-[10px] text-rose-600 font-bold uppercase">
-                    Portal Governance
+                  <span className="text-[10px] text-slate-500 font-medium">
+                    Platform Administrator
                   </span>
                 </div>
                 <ChevronDown
@@ -333,17 +333,17 @@ export default function AdminDashboardPage() {
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-slate-900 text-white font-bold shadow-xs'
+                        ? 'bg-indigo-50 text-brand-indigo font-bold shadow-xs'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className={`h-4 w-4 ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
+                      <Icon className={`h-4 w-4 ${isSelected ? 'text-brand-indigo' : 'text-slate-500'}`} />
                       <span>{item.label}</span>
                     </div>
 
                     {item.badge !== undefined && (
-                      <span className="h-4 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+                      <span className="h-4 px-1.5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center">
                         {item.badge}
                       </span>
                     )}
@@ -369,14 +369,14 @@ export default function AdminDashboardPage() {
             {/* Greeting Banner */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-bold mb-1 border border-rose-100">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-50 text-brand-indigo text-xs font-bold mb-1 border border-indigo-100">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  <span>Platform Superuser Operations</span>
+                  <span>Platform Operations</span>
                   <span>•</span>
                   <span>PostgreSQL Connected</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                  Executive Dashboard: {user?.fullName || 'Super Administrator'}
+                  Executive Dashboard: {user?.fullName || 'Executive Administrator'}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                   Verify manual bank/JazzCash fee receipts, manage teacher provisioning, and control direct publish toggles.
@@ -666,24 +666,25 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* System Scale & DB Status Card */}
-                <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-sm space-y-3">
+                <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                      System Operational
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>System Operational</span>
                     </span>
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] font-mono text-slate-400">Scale 10,000+</span>
                   </div>
 
                   <div className="space-y-1">
-                    <h4 className="font-bold text-sm text-white">PostgreSQL Supabase (v17.11)</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <h4 className="font-bold text-sm text-slate-900">PostgreSQL Supabase (v17.11)</h4>
+                    <p className="text-xs text-slate-500 leading-relaxed">
                       Scale target: 10,000+ concurrent students with composite indexes & RLS.
                     </p>
                   </div>
 
-                  <div className="text-[11px] text-slate-300 border-t border-slate-800 pt-2 space-y-1 font-mono">
-                    <p>Database: eu-west-1 pooler (Connected)</p>
-                    <p>Tables: 15 active schema tables</p>
+                  <div className="text-[11px] text-slate-600 border-t border-slate-100 pt-2 space-y-1 font-mono">
+                    <p>Database: eu-west-1 pooler (Connected ✓)</p>
+                    <p>Schema: 15 active tables</p>
                   </div>
                 </div>
               </div>
