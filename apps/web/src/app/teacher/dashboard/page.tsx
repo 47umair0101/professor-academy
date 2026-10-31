@@ -37,8 +37,13 @@ import {
   MessageSquare,
   HelpCircle,
   AlertCircle,
+  Eye,
 } from 'lucide-react';
 import { formatPKR } from '@professor-academy/shared';
+import {
+  TeacherCourseService,
+  type TeacherCourseSummary,
+} from '@/lib/services/teacher-course-service';
 
 type TeacherNavTab =
   | 'dashboard'
@@ -58,6 +63,11 @@ export default function TeacherDashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = React.useState(false);
   const [unreadNotificationsCount] = React.useState(2);
+  const [courses, setCourses] = React.useState<TeacherCourseSummary[]>([]);
+
+  React.useEffect(() => {
+    TeacherCourseService.getTeacherCourses(user?.id || 'demo-teacher').then(setCourses);
+  }, [user]);
 
   const profileDropdownRef = React.useRef<HTMLDivElement>(null);
 
@@ -314,13 +324,14 @@ export default function TeacherDashboardPage() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <button
-                  onClick={() => setActiveTab('my-courses')}
-                  className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
-                >
-                  <PlusCircle className="h-4 w-4 shrink-0" />
-                  <span>+ Create New Course</span>
-                </button>
+                <Link href="/teacher/courses/new">
+                  <button
+                    className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
+                  >
+                    <PlusCircle className="h-4 w-4 shrink-0" />
+                    <span>+ Create New Course</span>
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -401,53 +412,53 @@ export default function TeacherDashboardPage() {
                   </div>
 
                   <div className="space-y-3">
-                    {/* Course 1 */}
-                    <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                            PUBLISHED
-                          </span>
-                          <span className="text-xs font-mono text-slate-500">PKR 4,500</span>
+                    {courses.map((course) => (
+                      <div
+                        key={course.id}
+                        className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-300 transition-colors"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                course.status === 'PUBLISHED'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : course.status === 'PENDING_REVIEW'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-slate-200 text-slate-700'
+                              }`}
+                            >
+                              {course.status}
+                            </span>
+                            <span className="text-xs font-mono font-bold text-slate-700">
+                              {formatPKR(course.pricePkr)}
+                            </span>
+                            <span className="text-slate-400 text-xs">•</span>
+                            <span className="text-xs text-slate-500">{course.category}</span>
+                          </div>
+                          <h4 className="font-bold text-sm text-slate-900">{course.title}</h4>
+                          <p className="text-xs text-slate-500">
+                            {course.studentsCount > 0 ? `${course.studentsCount.toLocaleString()} students enrolled • ` : ''}
+                            {course.sectionsCount} sections • {course.lecturesCount} lectures
+                          </p>
                         </div>
-                        <h4 className="font-bold text-sm text-slate-900">
-                          MDCAT Physics: Complete High-Yield Prep & Past Paper Shortcuts (2026)
-                        </h4>
-                        <p className="text-xs text-slate-500">
-                          4,210 students enrolled • 54 lectures • 38 total hours
-                        </p>
-                      </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Button variant="secondary" size="md" className="text-xs">
-                          Edit Curriculum
-                        </Button>
-                      </div>
-                    </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Link href={`/courses/${course.slug}`}>
+                            <Button variant="ghost" size="md" className="text-xs">
+                              <Eye className="h-3.5 w-3.5 mr-1" />
+                              <span>View</span>
+                            </Button>
+                          </Link>
 
-                    {/* Course 2 */}
-                    <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                            PUBLISHED
-                          </span>
-                          <span className="text-xs font-mono text-slate-500">PKR 3,800</span>
+                          <Link href="/teacher/courses/new">
+                            <Button variant="secondary" size="md" className="text-xs font-semibold">
+                              Edit Curriculum
+                            </Button>
+                          </Link>
                         </div>
-                        <h4 className="font-bold text-sm text-slate-900">
-                          FSc Pre-Medical Physics Part-1: Mechanics & Heat
-                        </h4>
-                        <p className="text-xs text-slate-500">
-                          1,150 students enrolled • 42 lectures • 30 total hours
-                        </p>
                       </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Button variant="secondary" size="md" className="text-xs">
-                          Edit Curriculum
-                        </Button>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
@@ -503,14 +514,18 @@ export default function TeacherDashboardPage() {
                   </div>
 
                   <div className="space-y-2 pt-1">
-                    <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700">
-                      <span>✨ Draft 10 MDCAT Physics MCQs</span>
-                      <ArrowRight className="h-3.5 w-3.5 text-indigo-400" />
-                    </button>
-                    <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700">
-                      <span>✨ Summarize Chapter Formulas</span>
-                      <ArrowRight className="h-3.5 w-3.5 text-indigo-400" />
-                    </button>
+                    <Link href="/teacher/courses/new" className="block">
+                      <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700 cursor-pointer">
+                        <span>✨ Draft 10 MDCAT Physics MCQs</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
+                      </button>
+                    </Link>
+                    <Link href="/teacher/courses/new" className="block">
+                      <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700 cursor-pointer">
+                        <span>✨ Generate Complete Course Outline</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
+                      </button>
+                    </Link>
                   </div>
                 </div>
 

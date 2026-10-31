@@ -15,8 +15,8 @@
 | **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | `52d06ea` / `9a0b0dc` |
 | **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | `7a15961` |
 | **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | `22329a1` |
-| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | Pending Push |
-| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Next | ⚪ Pending | - |
+| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | `ffda176` |
+| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Co-Pilot (`@google/genai`) | ✅ Completed | ✅ All Passed | `Pending Push` |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini OCR receipt scan, Admin verification queue | ⚪ Pending | ⚪ Pending | - |
 | **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ⚪ Pending | ⚪ Pending | - |
 | **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ⚪ Pending | ⚪ Pending | - |
@@ -108,5 +108,34 @@
   - Direct persistence into PostgreSQL `platform_settings` table (row id = 1).
 - **Manual Fee Verification Queue (`activeTab === 'fee-queue'`):**
   - Verifies student bank transfer/JazzCash/Easypaisa transaction slips with in-app receipt image modal, TID verification, and instant Approve/Reject triggers.
+
+---
+
+## 🕒 Module 5 Changelog & Details
+- **Course & Curriculum Builder Wizard (`/teacher/courses/new`):**
+  - Multi-step interactive builder with Step 1 (Course Info, Categorization, 80/20 Revenue Split Calculator, Cover Thumbnail, and "Is this course right for me?" Eligibility Criteria Builder).
+  - Step 2: Interactive Curriculum Outline with draggable/reorderable Sections and multi-format Lectures (`VIDEO` or `TEXT`).
+  - Section and Lesson CRUD with instant Free Sample Preview toggles (`is_free_preview`).
+- **Interactive Video Preview Player (`VideoPreviewPlayer`):**
+  - Robust YouTube standard and unlisted URL parser with clean iframe embed wrapper (`rel=0&modestbranding=1`).
+  - Direct video streaming (`.mp4`) support with duration counter.
+- **Academic Rich Text Editor (`RichTextEditor`):**
+  - Headless Tiptap implementation (`@tiptap/react`, `@tiptap/starter-kit`) with academic toolbar.
+  - Headings (H1, H2, H3), bold, italic, strike, inline formula code, bullet/numbered lists, blockquotes, horizontal dividers, and 1-click Exam Tip Callout insertion.
+- **Google Gemini AI Teaching Co-Pilot (`@google/genai`):**
+  - Official SDK integration using model `gemini-2.5-flash` in `GeminiService`.
+  - Mode 1 (`SYLLABUS`): Generates full 4-section curriculum outlines tailored to Pakistani boards (MDCAT, ECAT, FSc, KPPSC, CSS) with 1-click "Apply to Course" trigger.
+  - Mode 2 (`MCQS`): Generates high-yield practice MCQs with options A-D, correct keys, and detailed scientific rationale with 1-click "Insert into Lecture Notes" action.
+  - Mode 3 (`POLISH`): Polishes raw lecture notes into high-yield academic study notes with exam tips.
+  - Resilient offline fallback generator for offline testing or unconfigured API keys.
+  - API endpoint: `POST /api/ai/course-copilot` with strict Zod validation.
+- **Teacher Course Service & Direct Publishing Logic (`TeacherCourseService`):**
+  - Checks instructor's `can_direct_publish` authorization flag.
+  - If authorized, 1-click "Direct Publish" immediately promotes course to `PUBLISHED` in public catalog.
+  - If un-authorized, "Submit for Review" queues the course into Admin Course Approvals as `PENDING_REVIEW`.
+- **Teacher Dashboard Integration (`/teacher/dashboard`):**
+  - Connected `+ Create New Course` button to `/teacher/courses/new`.
+  - Dynamic course list showing published, pending, and draft curricula with enrolled student counts, section counts, and PKR pricing.
+
 
 

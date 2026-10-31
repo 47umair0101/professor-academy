@@ -38,11 +38,45 @@ export const enrollmentPaymentSchema = z.object({
 
 export const courseCreateSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(120),
+  slug: z.string().min(3).optional(),
   category: z.string().min(2, 'Category is required'),
   shortDescription: z.string().min(10, 'Short description is required').max(300),
   fullDescription: z.string().min(30, 'Full description is required'),
   eligibilityCriteria: z.string().min(10, 'Eligibility criteria is required so students know if this course fits them'),
   pricePkr: z.number().min(0, 'Price in PKR must be 0 (Free) or positive'),
+  thumbnailUrl: z.string().url().optional().or(z.literal('')),
+});
+
+export const lessonItemSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(3, 'Lesson title is required'),
+  lessonType: z.enum(['VIDEO', 'TEXT', 'QUIZ']).default('VIDEO'),
+  contentHtml: z.string().optional().default(''),
+  videoUrl: z.string().optional().default(''),
+  videoDurationSeconds: z.number().min(0).default(0),
+  isFreePreview: z.boolean().default(false),
+  sortOrder: z.number().optional().default(0),
+});
+
+export const sectionItemSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(3, 'Section title is required'),
+  sortOrder: z.number().optional().default(0),
+  lessons: z.array(lessonItemSchema).default([]),
+});
+
+export const fullCurriculumSchema = z.object({
+  course: courseCreateSchema,
+  sections: z.array(sectionItemSchema).min(1, 'Please add at least one curriculum section'),
+  publishAction: z.enum(['DRAFT', 'SUBMIT_FOR_REVIEW', 'DIRECT_PUBLISH']).default('DRAFT'),
+});
+
+export const aiCoPilotPromptSchema = z.object({
+  mode: z.enum(['SYLLABUS', 'MCQS', 'POLISH', 'SUMMARY']),
+  topic: z.string().min(3, 'Topic is required'),
+  examTarget: z.string().optional().default('General Pakistan Academic & Entry Test'),
+  itemCount: z.number().min(1).max(20).optional().default(5),
+  rawContent: z.string().optional(),
 });
 
 export const teacherProvisionSchema = z.object({
@@ -73,5 +107,9 @@ export type SignupInput = z.infer<typeof signupSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type EnrollmentPaymentInput = z.infer<typeof enrollmentPaymentSchema>;
 export type CourseCreateInput = z.infer<typeof courseCreateSchema>;
+export type LessonItemInput = z.infer<typeof lessonItemSchema>;
+export type SectionItemInput = z.infer<typeof sectionItemSchema>;
+export type FullCurriculumInput = z.infer<typeof fullCurriculumSchema>;
+export type AICoPilotPromptInput = z.infer<typeof aiCoPilotPromptSchema>;
 export type TeacherProvisionInput = z.infer<typeof teacherProvisionSchema>;
 export type PlatformSettingsInput = z.infer<typeof platformSettingsSchema>;
