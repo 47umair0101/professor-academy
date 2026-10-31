@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
 import { MOCK_COURSES, type CourseData } from '@/lib/data/courses-data';
+import { CourseCatalogService } from '@/lib/services/course-catalog-service';
 import {
   Star,
   CheckCircle2,
@@ -37,8 +38,16 @@ export default function CourseDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
 
-  const course = React.useMemo(() => {
-    return MOCK_COURSES.find((c) => c.slug === slug) || MOCK_COURSES[0];
+  const [course, setCourse] = React.useState<CourseData>(
+    MOCK_COURSES.find((c) => c.slug === slug) || MOCK_COURSES[0]
+  );
+
+  React.useEffect(() => {
+    CourseCatalogService.getCourseBySlug(slug).then((found) => {
+      if (found) {
+        setCourse(found);
+      }
+    });
   }, [slug]);
 
   const [expandedSections, setExpandedSections] = React.useState<Record<string, boolean>>({

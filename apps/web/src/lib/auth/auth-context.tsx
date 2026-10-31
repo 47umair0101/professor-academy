@@ -39,7 +39,7 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 // Default Seed Test Accounts from PRD
 export const SEED_ACCOUNTS: Record<UserRole, AuthUser> = {
   STUDENT: {
-    id: 'usr-student-001',
+    id: '33333333-3333-3333-3333-333333333333',
     email: 'student@professoracademy.pk',
     fullName: 'Hamza Farooq',
     role: 'STUDENT',
@@ -48,7 +48,7 @@ export const SEED_ACCOUNTS: Record<UserRole, AuthUser> = {
     program: 'MDCAT Preparation (2026)',
   },
   TEACHER: {
-    id: 'usr-teacher-001',
+    id: '11111111-1111-1111-1111-111111111111',
     email: 'teacher@professoracademy.pk',
     fullName: 'Prof. Dr. Arshad Mahmood',
     role: 'TEACHER',
@@ -57,7 +57,7 @@ export const SEED_ACCOUNTS: Record<UserRole, AuthUser> = {
     program: 'Physics Department',
   },
   ADMIN: {
-    id: 'usr-admin-001',
+    id: '22222222-2222-2222-2222-222222222222',
     email: 'admin@professoracademy.pk',
     fullName: 'Executive Administrator',
     role: 'ADMIN',

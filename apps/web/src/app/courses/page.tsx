@@ -8,6 +8,7 @@ import { CourseCard } from '@/components/ui/course-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MOCK_COURSES, type CourseData } from '@/lib/data/courses-data';
+import { CourseCatalogService } from '@/lib/services/course-catalog-service';
 import {
   Search,
   SlidersHorizontal,
@@ -29,6 +30,12 @@ export default function CoursesCatalogPage() {
   const [sortBy, setSortBy] = React.useState<'popular' | 'rating' | 'price-asc' | 'price-desc'>('popular');
   const [mobileFilterOpen, setMobileFilterOpen] = React.useState(false);
 
+  const [courses, setCourses] = React.useState<CourseData[]>(MOCK_COURSES);
+
+  React.useEffect(() => {
+    CourseCatalogService.getAllPublishedCourses().then(setCourses);
+  }, []);
+
   const categories = [
     'All',
     'MDCAT Prep',
@@ -42,7 +49,7 @@ export default function CoursesCatalogPage() {
   const levels = ['All', 'Entry Test', 'Intermediate', 'Competitive Exam', 'Skill Development'];
 
   const filteredCourses = React.useMemo(() => {
-    return MOCK_COURSES.filter((course) => {
+    return courses.filter((course) => {
       // Search matching
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();

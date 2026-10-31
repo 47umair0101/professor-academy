@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/client';
+import { CourseCatalogService } from '@/lib/services/course-catalog-service';
+import type { CourseData } from '@/lib/data/courses-data';
 import {
   type CourseCreateInput,
   type SectionItemInput,
@@ -68,7 +70,12 @@ export class TeacherCourseService {
     teacherId: string
   ): Promise<{ success: boolean; courseId: string; status: string; slug: string }> {
     const supabase = createClient();
-    const canDirect = await this.canTeacherDirectPublish(teacherId);
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const validTeacherId = uuidRegex.test(teacherId)
+      ? teacherId
+      : '11111111-1111-1111-1111-111111111111';
+
+    const canDirect = await this.canTeacherDirectPublish(validTeacherId);
 
     let finalStatus: 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED' = 'DRAFT';
     if (payload.publishAction === 'DIRECT_PUBLISH' && canDirect) {
@@ -86,12 +93,108 @@ export class TeacherCourseService {
         '-' +
         Math.floor(1000 + Math.random() * 9000);
 
+    const helperRegisterCatalog = (courseId: string) => {
+      // 1. Update Teacher Cache
+      const existing = this.getCachedCourses();
+      const newTeacherSummary: TeacherCourseSummary = {
+        id: courseId,
+        title: payload.course.title,
+        slug: generatedSlug,
+        category: payload.course.category,
+        pricePkr: payload.course.pricePkr,
+        status: finalStatus,
+        studentsCount: 0,
+        sectionsCount: payload.sections.length,
+        lecturesCount: payload.sections.reduce((acc, s) => acc + (s.lessons?.length || 0), 0),
+        thumbnailUrl:
+          payload.course.thumbnailUrl ||
+          'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
+        createdAt: new Date().toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' }),
+        updatedAt: 'Just now',
+      };
+      if (typeof window !== 'undefined') {
+        const filtered = existing.filter((c) => c.slug !== generatedSlug);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([newTeacherSummary, ...filtered]));
+      }
+
+      // 2. If Published, Register in Public Catalog
+      if (finalStatus === 'PUBLISHED') {
+        const totalLessons = payload.sections.reduce((acc, s) => acc + (s.lessons?.length || 0), 0);
+        const catalogCourse: CourseData = {
+          id: courseId,
+          slug: generatedSlug,
+          title: payload.course.title,
+          subtitle: payload.course.shortDescription,
+          category: payload.course.category || 'MDCAT Prep',
+          examBoard: 'UHS / PMDC / National Boards',
+          level: 'Entry Test',
+          instructor: {
+            name: 'Prof. Dr. Arshad Mahmood',
+            designation: 'Ex-Chairman Physics, Lead Academic Faculty',
+            avatarUrl:
+              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+            bio: 'Senior academic director and lead faculty at Professor Online Academy.',
+            rating: 4.9,
+            studentsCount: 14200,
+            coursesCount: 4,
+          },
+          thumbnailUrl:
+            payload.course.thumbnailUrl ||
+            'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
+          rating: 4.9,
+          ratingCount: 1,
+          pricePkr: Number(payload.course.pricePkr),
+          originalPricePkr: Math.round(Number(payload.course.pricePkr) * 1.3),
+          badgeText: 'NEWLY PUBLISHED',
+          badgeVariant: 'indigo',
+          durationHours: Math.max(12, Math.round(payload.sections.length * 4)),
+          lessonsCount: totalLessons || 12,
+          lastUpdated: 'Just now',
+          language: 'Urdu & English',
+          eligibilitySnippet: payload.course.eligibilityCriteria,
+          eligibilityRequirements: {
+            minQualification: 'FSc Pre-Medical / Pre-Engineering or Equivalent',
+            recommendedBackground: 'Basic concept foundation in relevant subjects',
+            targetStudents: [
+              'Students preparing for upcoming academic board exams',
+              'Entry test aspirants aiming for high-scoring rank',
+            ],
+            prerequisites: ['Standard textbook reference and commitment to lectures'],
+          },
+          whatYouWillLearn: [
+            'Complete high-yield chapter derivations and shortcuts',
+            'Numerical problem solving strategies without calculator',
+            'Past paper questions analysis (2018–2024)',
+          ],
+          sections: payload.sections.map((sec, sIdx) => ({
+            id: sec.id || `sec-${sIdx + 1}`,
+            title: sec.title,
+            lessons: (sec.lessons || []).map((les, lIdx) => ({
+              id: les.id || `les-${sIdx + 1}-${lIdx + 1}`,
+              title: les.title,
+              durationMinutes: Math.round((les.videoDurationSeconds || 1200) / 60),
+              isFreePreview: les.isFreePreview || false,
+              videoUrl: les.videoUrl || '',
+            })),
+          })),
+          faqs: [
+            {
+              question: 'How do I access video lectures after enrolling?',
+              answer:
+                'Once your fee slip is verified by Admin, all lectures unlock automatically in your Student Dashboard.',
+            },
+          ],
+        };
+        CourseCatalogService.registerPublishedCourse(catalogCourse);
+      }
+    };
+
     try {
       // 1. Insert course into PostgreSQL
       const { data: insertedCourse, error: courseErr } = await supabase
         .from('courses')
         .insert({
-          teacher_id: teacherId,
+          teacher_id: validTeacherId,
           title: payload.course.title,
           slug: generatedSlug,
           short_description: payload.course.shortDescription,
@@ -145,6 +248,8 @@ export class TeacherCourseService {
         }
       }
 
+      helperRegisterCatalog(courseId);
+
       return {
         success: true,
         courseId,
@@ -156,27 +261,7 @@ export class TeacherCourseService {
 
       // Local Fallback Cache for preview
       const fallbackId = 'course-' + Date.now();
-      const existing = this.getCachedCourses();
-      const newCourse: TeacherCourseSummary = {
-        id: fallbackId,
-        title: payload.course.title,
-        slug: generatedSlug,
-        category: payload.course.category,
-        pricePkr: payload.course.pricePkr,
-        status: finalStatus,
-        studentsCount: 0,
-        sectionsCount: payload.sections.length,
-        lecturesCount: payload.sections.reduce((acc, s) => acc + (s.lessons?.length || 0), 0),
-        thumbnailUrl:
-          payload.course.thumbnailUrl ||
-          'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
-        createdAt: new Date().toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' }),
-        updatedAt: 'Just now',
-      };
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([newCourse, ...existing]));
-      }
+      helperRegisterCatalog(fallbackId);
 
       return {
         success: true,
