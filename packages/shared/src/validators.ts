@@ -31,9 +31,20 @@ export const forgotPasswordSchema = z.object({
 export const enrollmentPaymentSchema = z.object({
   courseId: z.string().uuid('Invalid Course ID'),
   paymentMethod: z.enum(['BANK_TRANSFER', 'JAZZCASH', 'EASYPAISA']),
-  transactionId: z.string().min(6, 'Transaction ID must be at least 6 characters').max(32, 'Transaction ID too long'),
+  transactionId: z.string().min(4, 'Transaction ID must be at least 4 characters').max(48, 'Transaction ID too long'),
   amountPaid: z.number().positive('Amount paid must be greater than zero'),
-  receiptUrl: z.string().url('Receipt image upload is required'),
+  receiptUrl: z.string().min(10, 'Receipt image upload is required'),
+});
+
+export const receiptOcrRequestSchema = z.object({
+  imageBase64: z.string().min(20, 'Image data is required'),
+  mimeType: z.string().default('image/jpeg'),
+});
+
+export const feeVerificationActionSchema = z.object({
+  enrollmentId: z.string().uuid('Invalid enrollment ID'),
+  action: z.enum(['APPROVE', 'REJECT']),
+  adminNotes: z.string().optional(),
 });
 
 export const courseCreateSchema = z.object({

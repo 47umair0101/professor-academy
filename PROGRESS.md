@@ -16,8 +16,8 @@
 | **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | `7a15961` |
 | **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | `22329a1` |
 | **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | `ffda176` |
-| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Co-Pilot (`@google/genai`) | ✅ Completed | ✅ All Passed | `Pending Push` |
-| **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini OCR receipt scan, Admin verification queue | ⚪ Pending | ⚪ Pending | - |
+| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, Tiptap academic editor with image upload, thumbnail file uploader & presets, Gemini AI Co-Pilot | ✅ Completed | ✅ All Passed | `5fdced7` / `740715f` |
+| **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini Vision OCR receipt scanner, Admin verification queue, Student fee history | ✅ Completed | ✅ All Passed | `Pending Push` |
 | **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ⚪ Pending | ⚪ Pending | - |
 | **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ⚪ Pending | ⚪ Pending | - |
 | **9** | **React Native (Expo) Mobile App** | Cross-platform Student, Teacher & Admin mobile experience with NativeWind | ⚪ Pending | ⚪ Pending | - |
@@ -136,6 +136,37 @@
 - **Teacher Dashboard Integration (`/teacher/dashboard`):**
   - Connected `+ Create New Course` button to `/teacher/courses/new`.
   - Dynamic course list showing published, pending, and draft curricula with enrolled student counts, section counts, and PKR pricing.
+- **Course Builder Upgrades & Rich Text Editor Modernization:**
+  - Upgraded Course Thumbnail Banner with 3 dedicated modes: Device File Upload (drag-and-drop & file picker with immediate 16:9 preview), 5 curated Pakistani syllabus presets (MDCAT Physics, ECAT Math, Organic Chemistry, Cambridge Biology, CSS/PMS), and Direct URL.
+  - Enhanced Rich Text Editor with multi-modal Image Upload & Embed Modal, science/math subscripts ($H_2O$) & superscripts ($x^2$), high-yield yellow highlighter, 3 academic callouts (💡 Rule, ⚠️ Pitfall, 📝 Formula), and 3x3 table insertion.
+
+---
+
+## 🕒 Module 6 Changelog & Details
+- **Database & RLS Policies Synchronization (`supabase/schema.sql`):**
+  - Configured PostgreSQL Row-Level Security policies on `public.enrollments` for Admin full management (`FOR ALL`), Teacher course enrollment visibility (`FOR SELECT`), and Student pending submission updates (`FOR UPDATE`).
+  - Added RLS policies on `public.notifications` for student delivery and automated system inserts.
+- **Gemini Vision Receipt OCR API (`POST /api/ai/receipt-ocr`):**
+  - Powered by Google Gemini API (`@google/genai` model `gemini-3.5-flash-lite`).
+  - Automatically analyzes student payment screenshots (JazzCash, Easypaisa, Meezan Bank, etc.) and extracts Transaction ID (TID), Amount in PKR, Payment Method, and Confidence Score.
+  - Built-in duplicate TID detection against existing database records to prevent duplicate fraud.
+- **Student Enrollment & Fee Checkout Page (`/courses/[slug]/enroll`):**
+  - Step 1: Displays official Pakistani receiving accounts (Meezan Bank Limited, JazzCash Merchant, Easypaisa) with 1-click clipboard copy for account numbers and IBANs.
+  - Step 2: Drag-and-drop receipt screenshot upload with instant Gemini Vision OCR scanning & autofill.
+  - Form validation, duplicate warning banner, and submission to `public.enrollments`.
+  - Success modal with instant link to Fee History or Course details.
+- **Admin Fee Verification & Audit Queue (`/admin/fee-verifications`):**
+  - Full superuser queue with status tabs (`Pending Verification`, `Approved`, `Rejected`, `All Records`).
+  - Side-by-side receipt inspector modal showing uploaded screenshot alongside student ledger and Gemini OCR metadata.
+  - 1-Click **Approve**: Unlocks course for student, sets enrollment to `ACTIVE`, automatically logs 80% teacher / 20% platform revenue split, and delivers real-time In-App notification to student.
+  - 1-Click **Reject**: Prompts for rejection reason, sets status to `REJECTED`, and notifies student with exact reason for re-uploading.
+  - Direct integration into Executive Admin Dashboard (`/admin/dashboard`).
+- **Student Fee & Transaction History (`/student/fees`):**
+  - Complete admission tracking portal with real-time status badges (`PENDING_VERIFICATION`, `ACTIVE`, `REJECTED`).
+  - View Receipt modal, TID display, and dynamic action buttons ("Go to Course" for active, "Resubmit" for rejected).
+- **Dynamic Course Page (`/courses/[slug]`) CTA Integration:**
+  - Real-time user enrollment state check.
+  - Displays "Enrolled • Continue Learning" if active, "Payment Under Review" if pending, "Receipt Rejected • Resubmit" if rejected, or "Enroll & Pay (PKR X,XXX)" for new admissions.
 
 
 

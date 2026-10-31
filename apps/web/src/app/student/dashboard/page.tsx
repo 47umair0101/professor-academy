@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import { RoleGuard } from '@/components/auth/role-guard';
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,7 @@ type NavTab =
 type NotificationCategory = 'All' | 'Academic' | 'Fees' | 'Quizzes' | 'Classes';
 
 export default function StudentDashboardPage() {
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = React.useState<NavTab>('dashboard');
   const [notificationFilter, setNotificationFilter] = React.useState<NotificationCategory>('All');
@@ -140,7 +142,7 @@ export default function StudentDashboardPage() {
     { id: 'weekend-quiz' as NavTab, label: 'Weekend Quiz', icon: CalendarCheck },
     { id: 'mock-tests' as NavTab, label: 'Mock Tests', icon: ClipboardCheck },
     { id: 'past-papers' as NavTab, label: 'Past Papers', icon: FileText, href: '/past-papers' },
-    { id: 'fee-details' as NavTab, label: 'Fee Details', icon: Wallet },
+    { id: 'fee-details' as NavTab, label: 'Fee Details', icon: Wallet, href: '/student/fees' },
     {
       id: 'notifications' as NavTab,
       label: 'Notifications',
@@ -301,7 +303,7 @@ export default function StudentDashboardPage() {
 
                     <button
                       onClick={() => {
-                        setActiveTab('fee-details');
+                        router.push('/student/fees');
                         setProfileDropdownOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-brand-indigo flex items-center gap-2.5 font-medium transition-colors"

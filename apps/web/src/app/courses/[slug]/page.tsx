@@ -8,8 +8,10 @@ import { Footer } from '@/components/ui/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
+import { useAuth } from '@/lib/auth/auth-context';
 import { MOCK_COURSES, type CourseData } from '@/lib/data/courses-data';
 import { CourseCatalogService } from '@/lib/services/course-catalog-service';
+import { EnrollmentService } from '@/lib/services/enrollment-service';
 import {
   Star,
   CheckCircle2,
@@ -37,10 +39,12 @@ import {
 export default function CourseDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
+  const { user } = useAuth();
 
   const [course, setCourse] = React.useState<CourseData>(
     MOCK_COURSES.find((c) => c.slug === slug) || MOCK_COURSES[0]
   );
+  const [enrollment, setEnrollment] = React.useState<any | null>(null);
 
   React.useEffect(() => {
     CourseCatalogService.getCourseBySlug(slug).then((found) => {
@@ -49,6 +53,12 @@ export default function CourseDetailPage() {
       }
     });
   }, [slug]);
+
+  React.useEffect(() => {
+    if (user?.id && course?.id) {
+      EnrollmentService.getEnrollmentForCourse(user.id, course.id).then(setEnrollment);
+    }
+  }, [user, course]);
 
   const [expandedSections, setExpandedSections] = React.useState<Record<string, boolean>>({
     [course?.sections[0]?.id || 'sec-1']: true,
@@ -490,16 +500,40 @@ export default function CourseDetailPage() {
                   </p>
                 </div>
 
-                {/* Enroll CTA */}
+                {/* Dynamic Enroll CTA */}
                 <div className="space-y-2.5">
-                  <Link href={`/login?redirect=/student/dashboard`}>
-                    <Button variant="primary" size="lg" className="w-full text-sm font-bold shadow-md">
-                      Enroll in Course Now
-                    </Button>
-                  </Link>
+                  {enrollment?.status === 'ACTIVE' ? (
+                    <Link href={`/student/dashboard`}>
+                      <Button variant="primary" size="lg" className="w-full text-sm font-bold shadow-md bg-emerald-600 hover:bg-emerald-700">
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        <span>Enrolled • Continue Learning</span>
+                      </Button>
+                    </Link>
+                  ) : enrollment?.status === 'PENDING_VERIFICATION' ? (
+                    <Link href={`/student/fees`}>
+                      <Button variant="secondary" size="lg" className="w-full text-sm font-bold shadow-md border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100">
+                        <Clock className="h-4 w-4 mr-2 text-amber-600" />
+                        <span>Payment Under Review (1-2 Hrs)</span>
+                      </Button>
+                    </Link>
+                  ) : enrollment?.status === 'REJECTED' ? (
+                    <Link href={`/courses/${slug}/enroll`}>
+                      <Button variant="danger" size="lg" className="w-full text-sm font-bold shadow-md">
+                        <AlertCircle className="h-4 w-4 mr-2" />
+                        <span>Receipt Rejected • Resubmit</span>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href={user ? `/courses/${slug}/enroll` : `/login?redirect=/courses/${slug}/enroll`}>
+                      <Button variant="primary" size="lg" className="w-full text-sm font-bold shadow-md">
+                        <span>Enroll & Pay ({course.pricePkr === 0 ? 'FREE' : `PKR ${course.pricePkr.toLocaleString()}`})</span>
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
+                  )}
 
                   <p className="text-center text-[11px] text-slate-500">
-                    30-Day Money-Back Guarantee • Instant Access
+                    Meezan Bank • JazzCash • Easypaisa • Manual Verification
                   </p>
                 </div>
 

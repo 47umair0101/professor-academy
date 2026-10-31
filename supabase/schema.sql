@@ -309,6 +309,43 @@ DROP POLICY IF EXISTS "Students can create enrollment requests" ON public.enroll
 CREATE POLICY "Students can create enrollment requests" ON public.enrollments
   FOR INSERT WITH CHECK (auth.uid() = student_id);
 
+DROP POLICY IF EXISTS "Admins can view and manage all enrollments" ON public.enrollments;
+CREATE POLICY "Admins can view and manage all enrollments" ON public.enrollments
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles 
+      WHERE id = auth.uid() AND role = 'ADMIN'
+    )
+  );
+
+DROP POLICY IF EXISTS "Teachers can view enrollments for their courses" ON public.enrollments;
+CREATE POLICY "Teachers can view enrollments for their courses" ON public.enrollments
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.courses 
+      WHERE id = enrollments.course_id AND teacher_id = auth.uid()
+    )
+  );
+
+DROP POLICY IF EXISTS "Students can update own pending enrollments" ON public.enrollments;
+CREATE POLICY "Students can update own pending enrollments" ON public.enrollments
+  FOR UPDATE USING (
+    auth.uid() = student_id AND status = 'PENDING_VERIFICATION'
+  );
+
+-- Notifications Policies
+DROP POLICY IF EXISTS "Users can view their own notifications" ON public.notifications;
+CREATE POLICY "Users can view their own notifications" ON public.notifications
+  FOR SELECT USING (auth.uid() = recipient_id);
+
+DROP POLICY IF EXISTS "Users can update their own notifications" ON public.notifications;
+CREATE POLICY "Users can update their own notifications" ON public.notifications
+  FOR UPDATE USING (auth.uid() = recipient_id);
+
+DROP POLICY IF EXISTS "System and admins can insert notifications" ON public.notifications;
+CREATE POLICY "System and admins can insert notifications" ON public.notifications
+  FOR INSERT WITH CHECK (true);
+
 -- Past Papers Policies
 DROP POLICY IF EXISTS "Past papers are viewable by everyone" ON public.past_papers;
 CREATE POLICY "Past papers are viewable by everyone" ON public.past_papers

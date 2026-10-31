@@ -14,6 +14,7 @@ import {
   type AdminTeacher,
   type PendingCourseReview,
 } from '@/lib/services/admin-service';
+import { EnrollmentService } from '@/lib/services/enrollment-service';
 import {
   LayoutDashboard,
   CheckCircle2,
@@ -147,6 +148,27 @@ export default function AdminDashboardPage() {
     AdminService.getTeachers().then(setTeachers);
     setPendingCourses(AdminService.getPendingCourses());
     AdminService.getPlatformSettings().then(setBankSettings);
+    EnrollmentService.getVerificationQueue('PENDING_VERIFICATION').then((items) => {
+      if (items && items.length > 0) {
+        setFeeRequests(
+          items.map((item) => ({
+            id: item.id,
+            studentName: item.studentName,
+            studentEmail: item.studentEmail,
+            courseTitle: item.courseTitle,
+            amountPkr: item.amountPaidPkr,
+            paymentMethod: item.paymentMethod,
+            tid: item.transactionId,
+            submittedAt: new Date(item.createdAt).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+            receiptUrl: item.receiptUrl,
+            status: 'PENDING' as const,
+          }))
+        );
+      }
+    });
   }, []);
 
   // Click outside listener for profile dropdown
@@ -223,14 +245,22 @@ export default function AdminDashboardPage() {
   };
 
   // 5. Fee Verification Handlers
-  const handleApproveFee = (id: string) => {
+  const handleApproveFee = async (id: string) => {
     setFeeRequests((prev) => prev.filter((r) => r.id !== id));
-    triggerToast('Payment verified! Student enrolled and notified via in-app notification.');
+    if (user?.id) {
+      await EnrollmentService.approveVerification(id, user.id);
+    }
+    triggerToast('Payment verified! Student enrolled, course unlocked & 80/20 split logged.');
   };
 
-  const handleRejectFee = (id: string) => {
+  const handleRejectFee = async (id: string) => {
+    const reason = prompt('Please enter the reason for rejection (e.g. invalid TID, blurred screenshot):');
+    if (!reason) return;
     setFeeRequests((prev) => prev.filter((r) => r.id !== id));
-    triggerToast('Fee receipt rejected. Student notified to re-upload clear transaction receipt.');
+    if (user?.id) {
+      await EnrollmentService.rejectVerification(id, user.id, reason);
+    }
+    triggerToast(`Fee receipt rejected. Reason: "${reason}".`);
   };
 
   const navItems = [
