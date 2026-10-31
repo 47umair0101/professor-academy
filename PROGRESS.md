@@ -18,8 +18,8 @@
 | **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | `ffda176` |
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, Tiptap academic editor with image upload, thumbnail file uploader & presets, Gemini AI Co-Pilot | ✅ Completed | ✅ All Passed | `5fdced7` / `740715f` |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini Vision OCR receipt scanner, Admin verification queue, Student fee history | ✅ Completed | ✅ All Passed | `6d2bd1d` |
-| **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ✅ Completed | ✅ All Passed | `Pending Push` |
-| **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ⚪ Pending | ⚪ Pending | - |
+| **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ✅ Completed | ✅ All Passed | `9db5b0a` |
+| **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ✅ Completed | ✅ All Passed | `Pending Push` |
 | **9** | **React Native (Expo) Mobile App** | Cross-platform Student, Teacher & Admin mobile experience with NativeWind | ⚪ Pending | ⚪ Pending | - |
 | **10** | **E2E Testing, Security Audit & Final Handover** | Full test suite, RLS verification, 10,000+ scale check, production documentation | ⚪ Pending | ⚪ Pending | - |
 
@@ -197,6 +197,39 @@
   - Connected "My Learning" and "Continue Learning" views to real enrolled courses from `public.enrollments` and `public.lesson_progress`.
   - Dynamic progress bars with live completion percentage and "Continue Learning" button leading straight to course player.
   - Course landing page CTA ("Enrolled • Continue Learning") routes directly into the course player.
+
+---
+
+## 🕒 Module 8 Changelog & Details
+- **Gemini AI Written Q/A Grader Service (`GeminiService.gradeWrittenAnswer`):**
+  - Powered by Google Gemini (`@google/genai` model `gemini-3.5-flash-lite`).
+  - Evaluates student freeform written answers against teacher rubric guidelines and keywords.
+  - Computes suggested scores with fractional precision, feedback breakdown, and missing key scientific concepts.
+  - Dedicated API Route: `POST /api/ai/grade-written`.
+- **Multi-Channel Notification Dispatcher (`NotificationService` & `/api/notifications/dispatch-email`):**
+  - Real-time in-app notification broadcasting backed by Supabase `public.notifications`.
+  - Transactional email dispatch route supporting Resend API and simulated SMTP logging for free-tier development.
+  - Methods: `getUserNotifications`, `sendNotification`, `notifyEnrolledStudents`, `markAsRead`, and `markAllAsRead`.
+- **Teacher Quiz Suite (`/teacher/quizzes`, `/teacher/quizzes/new`, `/teacher/quizzes/grading`):**
+  - **Quizzes Table (`/teacher/quizzes`):** Tabbed filtering (All, Published, Drafts), duration metrics, submission counts, and 1-click publishing.
+  - **Interactive Quiz Builder (`/teacher/quizzes/new`):**
+    - One-Click Gemini AI Question Generator producing high-yield exam questions across any Pakistani curriculum topic.
+    - Full support for all 5 question types: Single Choice (MCQ), Multiple Choice, True / False, Fill in the Blank, and Written Q/A (Descriptive).
+    - Customizable time limit (minutes), passing mark percentage, expiry toggle, and grading mode (`AUTO_AI`, `MANUAL_TEACHER`, `HYBRID_AI_TEACHER`).
+  - **Faculty Grading Queue (`/teacher/quizzes/grading`):**
+    - Inspector reviewing pending descriptive submissions.
+    - Side-by-side prompt, expected rubric, student answer, and Gemini AI recommended score & rationale with teacher override controls.
+    - Finalizing marks automatically calculates weighted aggregate percentage and triggers notification to the student.
+- **Student Timed Quiz Player (`/student/quizzes/[id]`):**
+  - Pre-quiz briefing card with syllabus alignment, attempt counter, and time limit.
+  - Live countdown timer with auto-submit on timeout.
+  - Question jump ribbon and response cards for all 5 question types.
+  - Immediate submission scoring for objective questions and queueing for descriptive hybrid questions.
+  - Post-assessment audit review with detailed step-by-step scientific rationales.
+- **Student Dashboard Integration (`/student/dashboard`):**
+  - Connected "Weekend Quiz" & "Mock Tests" tabs to live assessments with "Start Assessment" and "Review Rationales" actions.
+  - Connected Notifications tab with real-time database items, type-specific category filters, unread badge counters, and 1-click "Mark all as read".
+
 
 
 

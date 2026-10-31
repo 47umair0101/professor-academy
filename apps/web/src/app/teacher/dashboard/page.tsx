@@ -89,7 +89,7 @@ export default function TeacherDashboardPage() {
     { id: 'ai-copilot' as TeacherNavTab, label: 'Gemini AI Co-Pilot', icon: Sparkles, badge: 'AI' },
     { id: 'discussions' as TeacherNavTab, label: 'Student Q&A', icon: MessageSquare, badge: 5 },
     { id: 'live-classes' as TeacherNavTab, label: 'Live Sessions', icon: Radio },
-    { id: 'quizzes' as TeacherNavTab, label: 'Quizzes & Grading', icon: ClipboardCheck },
+    { id: 'quizzes' as TeacherNavTab, label: 'Quizzes & Grading', icon: ClipboardCheck, href: '/teacher/quizzes' },
     { id: 'earnings' as TeacherNavTab, label: 'Earnings & Payouts', icon: DollarSign },
     { id: 'profile' as TeacherNavTab, label: 'Faculty Profile', icon: User },
     { id: 'support' as TeacherNavTab, label: 'Faculty Support', icon: LifeBuoy },
@@ -264,6 +264,22 @@ export default function TeacherDashboardPage() {
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isSelected = activeTab === item.id;
+
+                if ((item as any).href) {
+                  return (
+                    <Link
+                      key={item.id}
+                      href={(item as any).href}
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-4 w-4 text-slate-500" />
+                        <span>{item.label}</span>
+                      </div>
+                      <span className="text-[10px] text-brand-indigo font-bold">Open →</span>
+                    </Link>
+                  );
+                }
 
                 return (
                   <button
@@ -524,6 +540,12 @@ export default function TeacherDashboardPage() {
                       <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700 cursor-pointer">
                         <span>✨ Generate Complete Course Outline</span>
                         <ArrowRight className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
+                      </button>
+                    </Link>
+                    <Link href="/teacher/quizzes/new" className="block">
+                      <button className="w-full text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs text-slate-200 flex items-center justify-between transition-colors border border-slate-700 cursor-pointer">
+                        <span>✨ Create Timed Assessment with AI</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                       </button>
                     </Link>
                   </div>

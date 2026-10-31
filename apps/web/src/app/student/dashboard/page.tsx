@@ -40,6 +40,8 @@ import {
 } from 'lucide-react';
 import { EnrollmentService } from '@/lib/services/enrollment-service';
 import { LessonService } from '@/lib/services/lesson-service';
+import { NotificationService } from '@/lib/services/notification-service';
+import { QuizService } from '@/lib/services/quiz-service';
 
 type NavTab =
   | 'dashboard'
@@ -82,6 +84,18 @@ export default function StudentDashboardPage() {
   // Enrolled Courses & Progress State (Module 7)
   const [enrolledCourses, setEnrolledCourses] = React.useState<any[]>([]);
   const [loadingCourses, setLoadingCourses] = React.useState(true);
+  const [dbNotifications, setDbNotifications] = React.useState<any[]>([]);
+  const [liveQuizzes, setLiveQuizzes] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (!user?.id) return;
+    NotificationService.getUserNotifications(user.id).then((items) => {
+      setDbNotifications(items);
+      const unread = items.filter((n) => !n.isRead).length;
+      if (unread > 0) setUnreadNotificationsCount(unread);
+    });
+    QuizService.getAllPublishedQuizzes(user.id).then(setLiveQuizzes);
+  }, [user?.id]);
 
   React.useEffect(() => {
     if (!user?.id) return;
@@ -178,13 +192,65 @@ export default function StudentDashboardPage() {
   ]);
 
   const filteredNotifications = React.useMemo(() => {
+    if (dbNotifications && dbNotifications.length > 0) {
+      const mapped = dbNotifications.map((n) => {
+        const catMap: Record<string, NotificationCategory> = {
+          ACADEMIC: 'Academic',
+          QUIZ: 'Quizzes',
+          FEE: 'Fees',
+          CLASS: 'Classes',
+          GENERAL: 'Academic',
+        };
+        const iconMap: Record<string, { icon: any; iconBg: string }> = {
+          ACADEMIC: { icon: Video, iconBg: 'bg-indigo-50 text-brand-indigo' },
+          QUIZ: { icon: ClipboardCheck, iconBg: 'bg-indigo-50 text-brand-indigo' },
+          FEE: { icon: Wallet, iconBg: 'bg-amber-50 text-amber-600' },
+          CLASS: { icon: Radio, iconBg: 'bg-sky-50 text-sky-600' },
+          GENERAL: { icon: Sparkles, iconBg: 'bg-purple-50 text-purple-600' },
+        };
+        const cat = catMap[n.type] || 'Academic';
+        const ic = iconMap[n.type] || { icon: Bell, iconBg: 'bg-slate-100 text-slate-600' };
+        return {
+          id: n.id,
+          title: n.title,
+          message: n.message,
+          category: cat,
+          time: n.createdAt,
+          isNew: !n.isRead,
+          linkUrl: n.linkUrl,
+          icon: ic.icon,
+          iconBg: ic.iconBg,
+        };
+      });
+
+      if (notificationFilter === 'All') return mapped;
+      return mapped.filter((n) => n.category === notificationFilter);
+    }
+
     if (notificationFilter === 'All') return notifications;
     return notifications.filter((n) => n.category === notificationFilter);
-  }, [notifications, notificationFilter]);
+  }, [dbNotifications, notifications, notificationFilter]);
 
-  const markAllNotificationsAsRead = () => {
+  const markAllNotificationsAsRead = async () => {
+    if (user?.id) {
+      await NotificationService.markAllAsRead(user.id);
+    }
+    setDbNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     setNotifications((prev) => prev.map((n) => ({ ...n, isNew: false })));
     setUnreadNotificationsCount(0);
+  };
+
+  const handleNotificationClick = async (notif: any) => {
+    if (notif.isNew) {
+      await NotificationService.markAsRead(notif.id);
+      setDbNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n))
+      );
+      setUnreadNotificationsCount((prev) => Math.max(0, prev - 1));
+    }
+    if (notif.linkUrl) {
+      router.push(notif.linkUrl);
+    }
   };
 
   const navItems = [
@@ -511,12 +577,13 @@ export default function StudentDashboardPage() {
                 {/* Notifications List Card */}
                 <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm divide-y divide-slate-100 overflow-hidden">
                   {filteredNotifications.length > 0 ? (
-                    filteredNotifications.map((notif) => {
+                    filteredNotifications.map((notif: any) => {
                       const Icon = notif.icon;
                       return (
                         <div
                           key={notif.id}
-                          className="p-4 sm:p-5 flex items-start sm:items-center gap-4 hover:bg-slate-50/60 transition-colors"
+                          onClick={() => handleNotificationClick(notif)}
+                          className="p-4 sm:p-5 flex items-start sm:items-center gap-4 hover:bg-slate-50/80 transition-colors cursor-pointer group"
                         >
                           {/* Circular Icon */}
                           <div
@@ -528,7 +595,7 @@ export default function StudentDashboardPage() {
                           {/* Content */}
                           <div className="flex-1 min-w-0 space-y-1">
                             <div className="flex flex-wrap items-center gap-2">
-                              <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                              <h4 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-brand-indigo transition-colors truncate">
                                 {notif.title}
                               </h4>
                               {notif.isNew && (
@@ -537,10 +604,19 @@ export default function StudentDashboardPage() {
                                 </span>
                               )}
                             </div>
+                            {notif.message && (
+                              <p className="text-xs text-slate-600 line-clamp-1">
+                                {notif.message}
+                              </p>
+                            )}
                             <p className="text-[11px] text-slate-400">
                               {notif.time} • <span className="font-medium text-slate-600">{notif.category}</span>
                             </p>
                           </div>
+
+                          {notif.linkUrl && (
+                            <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-brand-indigo transition-colors shrink-0 hidden sm:block" />
+                          )}
                         </div>
                       );
                     })
@@ -993,8 +1069,167 @@ export default function StudentDashboardPage() {
               </div>
             )}
 
+            {/* VIEW: WEEKEND QUIZZES & MOCK TESTS TAB */}
+            {(activeTab === 'weekend-quiz' || activeTab === 'mock-tests') && (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                      {activeTab === 'weekend-quiz' ? 'Weekend Quizzes & Timed Assessments' : 'MDCAT & ECAT Full Mock Tests'}
+                    </h1>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Assess your high-yield concepts with instant auto-grading and Hybrid AI written evaluation.
+                    </p>
+                  </div>
+                  <Badge variant="indigo" className="border-indigo-200 bg-indigo-50/50 text-brand-indigo font-bold text-xs py-1.5 px-3 self-start sm:self-auto">
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5 text-brand-indigo fill-current" />
+                    AI Rationales Enabled
+                  </Badge>
+                </div>
+
+                {/* Quizzes Grid */}
+                {liveQuizzes.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {liveQuizzes.map((quiz) => {
+                      const attempt = quiz.studentAttempt;
+                      const hasCompleted = attempt?.grading_status === 'COMPLETED';
+                      const isPendingGrading = attempt?.grading_status === 'PENDING_GRADING';
+
+                      return (
+                        <div
+                          key={quiz.id}
+                          className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+                        >
+                          <div className="p-6 space-y-4">
+                            {/* Course / Tag Badge */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[11px] font-bold text-brand-indigo uppercase tracking-wider bg-indigo-50 px-2.5 py-1 rounded-md">
+                                {quiz.courseTitle || 'MDCAT Physics'}
+                              </span>
+                              {quiz.hasExpiry && quiz.expiresAt && (
+                                <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  Exp: {new Date(quiz.expiresAt).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Title & Description */}
+                            <div>
+                              <h3 className="font-bold text-base text-slate-900 group-hover:text-brand-indigo transition-colors line-clamp-2">
+                                {quiz.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
+                                {quiz.description || 'Comprehensive timed assessment testing conceptual clarity, past-paper shortcuts, and hybrid written answers.'}
+                              </p>
+                            </div>
+
+                            {/* Meta Specs */}
+                            <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                                <span>{quiz.timeLimitMinutes} Mins Duration</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <Award className="h-3.5 w-3.5 text-slate-400" />
+                                <span>{quiz.passingPercentage}% Pass Mark</span>
+                              </div>
+                            </div>
+
+                            {/* Student Result Banner (If already attempted) */}
+                            {hasCompleted && (
+                              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                  <p className="text-[11px] font-bold text-emerald-800">
+                                    {attempt.is_passed ? 'Passed 🎉' : 'Needs Review'}
+                                  </p>
+                                  <p className="text-[10px] text-emerald-600">
+                                    Score: {attempt.total_score} pts ({attempt.percentage}%)
+                                  </p>
+                                </div>
+                                <span className="text-xs font-bold text-emerald-700 bg-white px-2 py-1 rounded shadow-xs">
+                                  {attempt.percentage}%
+                                </span>
+                              </div>
+                            )}
+
+                            {isPendingGrading && (
+                              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                  <p className="text-[11px] font-bold text-amber-800">
+                                    Under Review ⏳
+                                  </p>
+                                  <p className="text-[10px] text-amber-600">
+                                    Teacher is finalizing written Q/A
+                                  </p>
+                                </div>
+                                <span className="text-[10px] font-bold text-amber-700 bg-white px-2 py-1 rounded shadow-xs">
+                                  Pending
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Button Footer */}
+                          <div className="p-4 bg-slate-50/70 border-t border-slate-100">
+                            {hasCompleted ? (
+                              <Link href={`/student/quizzes/${quiz.id}`} className="block w-full">
+                                <Button
+                                  variant="secondary"
+                                  size="md"
+                                  className="w-full font-bold text-xs flex items-center justify-center gap-2"
+                                >
+                                  <span>Review Rationales</span>
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                </Button>
+                              </Link>
+                            ) : isPendingGrading ? (
+                              <Link href={`/student/quizzes/${quiz.id}`} className="block w-full">
+                                <Button
+                                  variant="secondary"
+                                  size="md"
+                                  className="w-full font-bold text-xs flex items-center justify-center gap-2"
+                                >
+                                  <span>View Submission</span>
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Link href={`/student/quizzes/${quiz.id}`} className="block w-full">
+                                <Button
+                                  variant="primary"
+                                  size="md"
+                                  className="w-full font-bold text-xs flex items-center justify-center gap-2"
+                                >
+                                  <Play className="h-3.5 w-3.5 fill-current" />
+                                  <span>Start Assessment</span>
+                                </Button>
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-2xl border border-slate-200/90 p-12 text-center space-y-3">
+                    <div className="h-12 w-12 rounded-xl bg-indigo-50 text-brand-indigo flex items-center justify-center mx-auto">
+                      <ClipboardCheck className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-bold text-base text-slate-900">
+                      No Scheduled Assessments Yet
+                    </h3>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                      Your instructors will schedule weekly conceptual quizzes and mock exam papers here. Check back soon!
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* VIEW 3: OTHER TABS PLACEHOLDER (e.g. My Learning, Live Classes, Fee Details) */}
-            {activeTab !== 'dashboard' && activeTab !== 'notifications' && activeTab !== 'my-learning' && activeTab !== 'video-courses' && (
+            {activeTab !== 'dashboard' && activeTab !== 'notifications' && activeTab !== 'my-learning' && activeTab !== 'video-courses' && activeTab !== 'weekend-quiz' && activeTab !== 'mock-tests' && (
               <div className="bg-white rounded-2xl border border-slate-200/90 p-8 text-center space-y-3">
                 <div className="h-12 w-12 rounded-xl bg-indigo-50 text-brand-indigo flex items-center justify-center mx-auto">
                   <Sparkles className="h-6 w-6" />
