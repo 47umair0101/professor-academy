@@ -509,38 +509,32 @@ export default function AdminDashboardPage() {
                           </div>
 
                           <div className="flex items-center gap-2 shrink-0">
-                            <Button
-                              variant="outline"
-                              size="sm"
+                            <button
                               onClick={() => {
                                 setSelectedReceiptUrl(req.receiptUrl);
                                 setReceiptModalOpen(true);
                               }}
-                              className="text-xs"
+                              className="inline-flex flex-row items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200/90 bg-white text-brand-indigo hover:bg-indigo-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                             >
-                              <Eye className="h-3.5 w-3.5 mr-1" />
+                              <Eye className="h-3.5 w-3.5 text-brand-indigo shrink-0" />
                               <span>View Receipt</span>
-                            </Button>
+                            </button>
 
-                            <Button
-                              variant="primary"
-                              size="sm"
+                            <button
                               onClick={() => handleApproveFee(req.id)}
-                              className="text-xs font-bold bg-emerald-600 hover:bg-emerald-700"
+                              className="inline-flex flex-row items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                             >
-                              <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                              <CheckCircle2 className="h-3.5 w-3.5 text-white shrink-0" />
                               <span>Approve</span>
-                            </Button>
+                            </button>
 
-                            <Button
-                              variant="danger"
-                              size="sm"
+                            <button
                               onClick={() => handleRejectFee(req.id)}
-                              className="text-xs"
+                              className="inline-flex flex-row items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                             >
-                              <XCircle className="h-3.5 w-3.5 mr-1" />
+                              <XCircle className="h-3.5 w-3.5 text-white shrink-0" />
                               <span>Reject</span>
-                            </Button>
+                            </button>
                           </div>
                         </div>
                       ))}

@@ -26,7 +26,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium tracking-tight transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-lg active:scale-[0.99]';
+      'inline-flex flex-row items-center justify-center font-medium tracking-tight whitespace-nowrap transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-xl active:scale-[0.99] cursor-pointer';
 
     const variants = {
       primary:
@@ -40,14 +40,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ghost:
         'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900',
       danger:
-        'bg-red-600 text-white hover:bg-red-700 shadow-subtle',
+        'bg-rose-600 text-white hover:bg-rose-700 shadow-subtle',
     };
 
     const sizes = {
-      sm: 'text-xs h-8 px-3 gap-1.5 font-medium',
-      md: 'text-sm h-10 px-4 gap-2 font-medium',
-      lg: 'text-base h-11 px-5 gap-2.5 font-semibold',
-      icon: 'h-10 w-10 p-0',
+      sm: 'text-xs h-8 px-3 gap-1.5 font-semibold',
+      md: 'text-xs sm:text-sm h-9.5 px-4 gap-2 font-semibold',
+      lg: 'text-sm sm:text-base h-11 px-5 gap-2.5 font-bold',
+      icon: 'h-9 w-9 p-0',
     };
 
     return (
@@ -58,13 +58,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-current" />
+          <Loader2 className="h-4 w-4 animate-spin text-current shrink-0" />
         ) : (
-          leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>
+          leftIcon && <span className="inline-flex shrink-0 items-center justify-center">{leftIcon}</span>
         )}
-        <span>{children}</span>
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">{children}</span>
         {!isLoading && rightIcon && (
-          <span className="inline-flex shrink-0">{rightIcon}</span>
+          <span className="inline-flex shrink-0 items-center justify-center">{rightIcon}</span>
         )}
       </button>
     );
