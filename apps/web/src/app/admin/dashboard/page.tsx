@@ -46,6 +46,9 @@ import {
   Layers,
   Database,
   ExternalLink,
+  ZoomIn,
+  ZoomOut,
+  Copy,
 } from 'lucide-react';
 import { formatPKR, type PlatformSettingsInput } from '@professor-academy/shared';
 
@@ -85,6 +88,9 @@ export default function AdminDashboardPage() {
   const [provisionModalOpen, setProvisionModalOpen] = React.useState(false);
   const [receiptModalOpen, setReceiptModalOpen] = React.useState(false);
   const [selectedReceiptUrl, setSelectedReceiptUrl] = React.useState<string | null>(null);
+  const [selectedFeeRequest, setSelectedFeeRequest] = React.useState<any | null>(null);
+  const [receiptZoom, setReceiptZoom] = React.useState<number>(1);
+  const [copiedTid, setCopiedTid] = React.useState(false);
   const [coursePreviewModalOpen, setCoursePreviewModalOpen] = React.useState(false);
   const [selectedCourseForPreview, setSelectedCourseForPreview] = React.useState<PendingCourseReview | null>(null);
   const [successToast, setSuccessToast] = React.useState<string | null>(null);
@@ -632,7 +638,9 @@ export default function AdminDashboardPage() {
                               <div className="flex items-center gap-2 shrink-0">
                                 <button
                                   onClick={() => {
+                                    setSelectedFeeRequest(req);
                                     setSelectedReceiptUrl(req.receiptUrl);
+                                    setReceiptZoom(1);
                                     setReceiptModalOpen(true);
                                   }}
                                   className="inline-flex flex-row items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200/90 bg-white text-brand-indigo hover:bg-indigo-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
@@ -1185,7 +1193,9 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center gap-2 shrink-0">
                         <button
                           onClick={() => {
+                            setSelectedFeeRequest(req);
                             setSelectedReceiptUrl(req.receiptUrl);
+                            setReceiptZoom(1);
                             setReceiptModalOpen(true);
                           }}
                           className="inline-flex flex-row items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200/90 bg-white text-brand-indigo hover:bg-indigo-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
@@ -1447,27 +1457,172 @@ export default function AdminDashboardPage() {
       {/* 3. Modal: Receipt Viewer */}
       <Modal
         isOpen={receiptModalOpen}
-        onClose={() => setReceiptModalOpen(false)}
+        onClose={() => {
+          setReceiptModalOpen(false);
+          setReceiptZoom(1);
+        }}
         title="Student Fee Payment Receipt"
-        maxWidth="md"
+        description={
+          selectedFeeRequest
+            ? `${selectedFeeRequest.studentName} • ${selectedFeeRequest.courseTitle}`
+            : 'Audit student bank or mobile wallet transaction slip'
+        }
+        maxWidth="2xl"
       >
         <div className="space-y-4">
-          <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-            {selectedReceiptUrl && (
-              <img
-                src={selectedReceiptUrl}
-                alt="Payment Receipt"
-                className="w-full h-full object-cover"
-              />
+          {/* Header Bar with Quick Metadata & Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs">
+            <div className="flex items-center gap-3">
+              <div>
+                <span className="text-[10px] text-slate-400 font-medium block uppercase tracking-wider">Method</span>
+                <span className="font-bold text-slate-800">{selectedFeeRequest?.paymentMethod || 'Manual'}</span>
+              </div>
+              <div className="h-6 w-px bg-slate-200" />
+              <div>
+                <span className="text-[10px] text-slate-400 font-medium block uppercase tracking-wider">Amount</span>
+                <span className="font-bold text-emerald-700">PKR {selectedFeeRequest?.amountPkr?.toLocaleString() || '0'}</span>
+              </div>
+              <div className="h-6 w-px bg-slate-200" />
+              <div>
+                <span className="text-[10px] text-slate-400 font-medium block uppercase tracking-wider">TID</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
+                    {selectedFeeRequest?.tid || 'N/A'}
+                  </span>
+                  {selectedFeeRequest?.tid && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedFeeRequest.tid);
+                        setCopiedTid(true);
+                        setTimeout(() => setCopiedTid(false), 2000);
+                      }}
+                      className="p-1 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors"
+                      title="Copy Transaction ID"
+                    >
+                      {copiedTid ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Zoom & View Controls */}
+            <div className="flex items-center gap-1.5 bg-white p-1 rounded-lg border border-slate-200 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setReceiptZoom((prev) => Math.max(0.6, prev - 0.2))}
+                className="p-1.5 rounded hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setReceiptZoom(1)}
+                className="px-2 py-0.5 text-[11px] font-mono text-slate-600 hover:bg-slate-100 rounded cursor-pointer"
+                title="Reset Zoom"
+              >
+                {Math.round(receiptZoom * 100)}%
+              </button>
+              <button
+                type="button"
+                onClick={() => setReceiptZoom((prev) => Math.min(2.5, prev + 0.2))}
+                className="p-1.5 rounded hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </button>
+              <div className="h-4 w-px bg-slate-200 mx-0.5" />
+              {selectedReceiptUrl && (
+                <a
+                  href={selectedReceiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded hover:bg-slate-100 text-slate-600 hover:text-brand-indigo transition-colors flex items-center gap-1 text-[11px] font-medium"
+                  title="Open Full Image in New Tab"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  <span className="hidden sm:inline">Open Original</span>
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Screenshot Display Frame - 100% Fully Visible with object-contain */}
+          <div className="min-h-[380px] max-h-[64vh] w-full rounded-2xl overflow-auto bg-slate-950 border border-slate-800 flex items-center justify-center p-3 relative shadow-inner">
+            {selectedReceiptUrl ? (
+              <div className="flex items-center justify-center min-w-full min-h-full">
+                <img
+                  src={selectedReceiptUrl}
+                  alt="Student Payment Receipt Screenshot"
+                  style={{
+                    transform: `scale(${receiptZoom})`,
+                    transformOrigin: 'center center',
+                    transition: 'transform 0.15s ease-out',
+                  }}
+                  className="max-h-[60vh] w-auto max-w-full object-contain mx-auto rounded-lg shadow-2xl block"
+                />
+              </div>
+            ) : (
+              <div className="text-slate-500 text-xs flex flex-col items-center gap-2">
+                <span>No receipt image uploaded.</span>
+              </div>
             )}
           </div>
-          <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-xl">
-            Verify transaction ID (TID) against the merchant SMS statement before approving access.
+
+          {/* Verification Tip */}
+          <div className="p-3 bg-amber-50/90 border border-amber-200 text-amber-900 text-xs rounded-xl flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <span className="font-bold">Audit Check:</span> Ensure TID matches incoming SMS alerts or business portal logs before unlocking course access.
+            </span>
           </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" size="md" onClick={() => setReceiptModalOpen(false)}>
-              Close
-            </Button>
+
+          {/* Action Footer */}
+          <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div className="text-xs text-slate-500">
+              Submitted: {selectedFeeRequest?.submittedAt || 'Recently'}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() => {
+                  setReceiptModalOpen(false);
+                  setReceiptZoom(1);
+                }}
+              >
+                Close
+              </Button>
+              {selectedFeeRequest && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const id = selectedFeeRequest.id;
+                      setReceiptModalOpen(false);
+                      handleRejectFee(id);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-[0.99]"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    <span>Reject</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const id = selectedFeeRequest.id;
+                      setReceiptModalOpen(false);
+                      handleApproveFee(id);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-[0.99]"
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Approve Access</span>
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </Modal>

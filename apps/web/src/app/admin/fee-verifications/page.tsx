@@ -29,6 +29,8 @@ import {
   Check,
   X,
   Loader2,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import { cn } from '@/lib/utils';
@@ -46,6 +48,7 @@ export default function AdminFeeVerificationsPage() {
 
   // Selected item for side-by-side inspection
   const [inspectItem, setInspectItem] = React.useState<VerificationQueueItem | null>(null);
+  const [receiptZoom, setReceiptZoom] = React.useState<number>(1);
 
   // Rejection modal
   const [rejectModalOpen, setRejectModalOpen] = React.useState(false);
@@ -383,23 +386,70 @@ export default function AdminFeeVerificationsPage() {
         {inspectItem && !rejectModalOpen && (
           <Modal
             isOpen={!!inspectItem}
-            onClose={() => setInspectItem(null)}
+            onClose={() => {
+              setInspectItem(null);
+              setReceiptZoom(1);
+            }}
             title={`Payment Receipt Audit - TID: ${inspectItem.transactionId}`}
-            maxWidth="xl"
+            maxWidth="2xl"
           >
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-1">
               {/* Left Column: Receipt Screenshot Image (7 Cols) */}
               <div className="md:col-span-7 space-y-2">
                 <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="font-bold text-slate-700">Uploaded Payment Screenshot</span>
-                  <span className="text-[11px] font-mono">{inspectItem.paymentMethod}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-700">Uploaded Payment Screenshot</span>
+                    <span className="text-[11px] font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200">{inspectItem.paymentMethod}</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => setReceiptZoom((prev) => Math.max(0.6, prev - 0.2))}
+                      className="p-1 rounded hover:bg-white text-slate-600 cursor-pointer"
+                      title="Zoom Out"
+                    >
+                      <ZoomOut className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setReceiptZoom(1)}
+                      className="px-1.5 py-0.5 text-[10px] font-mono text-slate-600 hover:bg-white rounded cursor-pointer"
+                      title="Reset Zoom"
+                    >
+                      {Math.round(receiptZoom * 100)}%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setReceiptZoom((prev) => Math.min(2.5, prev + 0.2))}
+                      className="p-1 rounded hover:bg-white text-slate-600 cursor-pointer"
+                      title="Zoom In"
+                    >
+                      <ZoomIn className="h-3.5 w-3.5" />
+                    </button>
+                    <div className="h-3.5 w-px bg-slate-300 mx-0.5" />
+                    <a
+                      href={inspectItem.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 rounded hover:bg-white text-slate-600 hover:text-brand-indigo cursor-pointer flex items-center gap-1 text-[11px]"
+                      title="Open Original in New Tab"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Original</span>
+                    </a>
+                  </div>
                 </div>
 
-                <div className="aspect-video max-h-96 w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 flex items-center justify-center shadow-inner">
+                <div className="min-h-[440px] max-h-[64vh] w-full rounded-2xl overflow-auto bg-slate-950 border border-slate-800 flex items-center justify-center p-3 relative shadow-inner">
                   <img
                     src={inspectItem.receiptUrl}
                     alt="Receipt Screenshot"
-                    className="w-full h-full object-contain"
+                    style={{
+                      transform: `scale(${receiptZoom})`,
+                      transformOrigin: 'center center',
+                      transition: 'transform 0.15s ease-out',
+                    }}
+                    className="max-h-[60vh] w-auto max-w-full object-contain mx-auto rounded-lg shadow-xl block"
                   />
                 </div>
 

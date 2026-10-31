@@ -23,6 +23,8 @@ import {
   Sparkles,
   ArrowLeft,
   X,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import { cn } from '@/lib/utils';
@@ -41,6 +43,7 @@ export default function StudentFeeHistoryPage() {
     courseTitle: string;
     tid: string;
   } | null>(null);
+  const [receiptZoom, setReceiptZoom] = React.useState<number>(1);
 
   const loadData = React.useCallback(async () => {
     if (!user?.id) return;
@@ -283,29 +286,77 @@ export default function StudentFeeHistoryPage() {
         {selectedReceipt && (
           <Modal
             isOpen={!!selectedReceipt}
-            onClose={() => setSelectedReceipt(null)}
+            onClose={() => {
+              setSelectedReceipt(null);
+              setReceiptZoom(1);
+            }}
             title={`Payment Receipt - TID: ${selectedReceipt.tid}`}
-            maxWidth="md"
+            description={selectedReceipt.courseTitle}
+            maxWidth="lg"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between text-xs text-slate-500 border-b border-slate-100 pb-2">
-                <span>{selectedReceipt.courseTitle}</span>
                 <span className="font-mono font-bold text-slate-800">TID: {selectedReceipt.tid}</span>
+                <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setReceiptZoom((prev) => Math.max(0.6, prev - 0.2))}
+                    className="p-1 rounded hover:bg-white text-slate-600 cursor-pointer"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReceiptZoom(1)}
+                    className="px-1.5 py-0.5 text-[10px] font-mono text-slate-600 hover:bg-white rounded cursor-pointer"
+                    title="Reset Zoom"
+                  >
+                    {Math.round(receiptZoom * 100)}%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReceiptZoom((prev) => Math.min(2.5, prev + 0.2))}
+                    className="p-1 rounded hover:bg-white text-slate-600 cursor-pointer"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="h-3.5 w-3.5" />
+                  </button>
+                  <div className="h-3.5 w-px bg-slate-300 mx-0.5" />
+                  <a
+                    href={selectedReceipt.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded hover:bg-white text-slate-600 hover:text-brand-indigo cursor-pointer flex items-center gap-1 text-[11px]"
+                    title="Open Original in New Tab"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Original</span>
+                  </a>
+                </div>
               </div>
 
-              <div className="aspect-video max-h-96 w-full rounded-xl overflow-hidden bg-slate-900 border border-slate-200 flex items-center justify-center shadow-inner">
+              <div className="min-h-[380px] max-h-[64vh] w-full rounded-2xl overflow-auto bg-slate-950 border border-slate-800 flex items-center justify-center p-3 relative shadow-inner">
                 <img
                   src={selectedReceipt.url}
                   alt="Receipt Preview"
-                  className="w-full h-full object-contain"
+                  style={{
+                    transform: `scale(${receiptZoom})`,
+                    transformOrigin: 'center center',
+                    transition: 'transform 0.15s ease-out',
+                  }}
+                  className="max-h-[60vh] w-auto max-w-full object-contain mx-auto rounded-lg shadow-xl block"
                 />
               </div>
 
               <div className="flex justify-end pt-2">
                 <button
                   type="button"
-                  onClick={() => setSelectedReceipt(null)}
-                  className="px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                  onClick={() => {
+                    setSelectedReceipt(null);
+                    setReceiptZoom(1);
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
                 >
                   Close Receipt
                 </button>
