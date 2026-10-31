@@ -45,8 +45,33 @@ export const courseCreateSchema = z.object({
   pricePkr: z.number().min(0, 'Price in PKR must be 0 (Free) or positive'),
 });
 
+export const teacherProvisionSchema = z.object({
+  fullName: z.string().min(3, 'Full name must be at least 3 characters'),
+  email: z.string().email('Please enter a valid faculty email address'),
+  department: z.string().min(2, 'Department / subject specialization is required'),
+  phone: z.string().optional().or(z.literal('')),
+  commissionRate: z.number().min(50).max(95).default(80),
+  canDirectPublish: z.boolean().default(false),
+  initialPassword: z.string().min(6, 'Initial password must be at least 6 characters'),
+});
+
+export const platformSettingsSchema = z.object({
+  bankName: z.string().min(2, 'Bank name is required'),
+  accountTitle: z.string().min(2, 'Account title is required'),
+  accountNumber: z.string().min(5, 'Account number is required'),
+  iban: z.string().min(10, 'IBAN is required'),
+  branchCode: z.string().optional(),
+  jazzcashTitle: z.string().min(2, 'JazzCash title is required'),
+  jazzcashNumber: z.string().min(10, 'JazzCash mobile number is required'),
+  jazzcashTillId: z.string().optional(),
+  easypaisaTitle: z.string().min(2, 'Easypaisa title is required'),
+  easypaisaNumber: z.string().min(10, 'Easypaisa mobile number is required'),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type SignupInput = z.infer<typeof signupSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type EnrollmentPaymentInput = z.infer<typeof enrollmentPaymentSchema>;
 export type CourseCreateInput = z.infer<typeof courseCreateSchema>;
+export type TeacherProvisionInput = z.infer<typeof teacherProvisionSchema>;
+export type PlatformSettingsInput = z.infer<typeof platformSettingsSchema>;

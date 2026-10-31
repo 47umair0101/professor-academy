@@ -14,9 +14,9 @@
 |---|---|---|---|---|---|
 | **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | `52d06ea` / `9a0b0dc` |
 | **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | `7a15961` |
-| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | Pending Push |
-| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ⚪ Next | ⚪ Pending | - |
-| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Pending | ⚪ Pending | - |
+| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | `22329a1` |
+| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | Pending Push |
+| **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Next | ⚪ Pending | - |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini OCR receipt scan, Admin verification queue | ⚪ Pending | ⚪ Pending | - |
 | **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ⚪ Pending | ⚪ Pending | - |
 | **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ⚪ Pending | ⚪ Pending | - |
@@ -84,4 +84,29 @@
 - **Public Core Pages:**
   - **About Page (`/about`):** Mission, 4-pillar academic pedagogy (High-yield concepts, Past paper drills, Gemini AI tutor, Local fee accessibility), leadership team, and student metrics.
   - **Contact Page (`/contact`):** Interactive inquiry form with client validation, WhatsApp helpline, support email, operating hours, and physical campus addresses (Lahore, Islamabad, Karachi).
+
+---
+
+## 🕒 Module 4 Changelog & Details
+- **Admin Service & Validation Layer (`AdminService`):**
+  - Integrated Supabase database queries for faculty members, fee queues, and platform settings with resilient offline state fallbacks.
+  - Added Zod schemas (`teacherProvisionSchema`, `platformSettingsSchema`) for strict payload verification.
+- **Executive Dashboard KPIs (`/admin/dashboard`):**
+  - Live metric cards: Gross Platform Volume (PKR), Net Platform Cut (20%), Pending Fee Receipts count, and Active Faculty count.
+  - Unified clean layout with decent Royal Indigo branding, fixed viewport sidebar, pinned bottom logout, and interactive admin profile dropdown.
+- **Teacher Provisioning System (PRD Section 4 Mandate):**
+  - Built Provisioning Modal form with Full Name, Faculty Email, Department, Pakistani Phone, 80/20 Commission rate, and Initial Temporary Password.
+  - Complete Faculty Directory Table displaying instructor metrics, commission splits, and department tags.
+- **Interactive Direct Publish Toggle (PRD Section 4 Mandate):**
+  - Per-teacher interactive toggle switch (`can_direct_publish`) allowing admin to authorize instant publishing (skipping review) or enforce approval review.
+- **Course Approvals Queue (`activeTab === 'course-approvals'`):**
+  - Inspection pipeline for courses submitted by non-direct-publish instructors.
+  - Syllabus preview modal showing price PKR, duration, lectures count, and prerequisites snippet.
+  - 1-click "Approve & Publish to Catalog" and "Request Changes" actions with real-time feedback.
+- **Platform Bank & Payment Accounts Manager (`platform_settings` table):**
+  - Editable form for Meezan Bank (Account Title, Number, IBAN, Branch Code), JazzCash (Account Title, Number, Till ID), and Easypaisa.
+  - Direct persistence into PostgreSQL `platform_settings` table (row id = 1).
+- **Manual Fee Verification Queue (`activeTab === 'fee-queue'`):**
+  - Verifies student bank transfer/JazzCash/Easypaisa transaction slips with in-app receipt image modal, TID verification, and instant Approve/Reject triggers.
+
 
