@@ -40,7 +40,13 @@ import {
   ShieldCheck,
   AlertTriangle,
   Lightbulb,
+  Upload,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  Check,
+  X,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const CATEGORIES = [
   'Medical / MDCAT',
@@ -50,6 +56,34 @@ const CATEGORIES = [
   'Lecturership / PPSC & KPPSC',
   'Matric / Secondary Education',
   'General Academic & Skills',
+];
+
+const THUMBNAIL_PRESETS = [
+  {
+    label: 'MDCAT Physics Masterclass',
+    tag: 'Medical Entrance & UHS Prep',
+    url: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'ECAT Advanced Engineering',
+    tag: 'Engineering Math & Calculus',
+    url: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Organic Chemistry Lab',
+    tag: 'FSc Pre-Medical Part 1 & 2',
+    url: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Cambridge Biology & Genetics',
+    tag: 'A-Level / NUMS Medical Test',
+    url: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Civil Services / CSS & PMS',
+    tag: 'Competitive Examinations',
+    url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
+  },
 ];
 
 export default function NewCoursePage() {
@@ -70,6 +104,39 @@ export default function NewCoursePage() {
   const [thumbnailUrl, setThumbnailUrl] = React.useState(
     'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80'
   );
+  const [thumbnailTab, setThumbnailTab] = React.useState<'upload' | 'presets' | 'url'>('upload');
+  const [thumbnailFileName, setThumbnailFileName] = React.useState<string | null>(null);
+  const [isDraggingThumbnail, setIsDraggingThumbnail] = React.useState(false);
+  const thumbnailFileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleThumbnailFileUpload = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, WebP, or SVG).');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image file size must be less than 10MB.');
+      return;
+    }
+    setThumbnailFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        setThumbnailUrl(dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleThumbnailDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingThumbnail(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleThumbnailFileUpload(file);
+    }
+  };
 
   // Curriculum Sections State
   const [sections, setSections] = React.useState<SectionItemInput[]>([
@@ -561,18 +628,38 @@ export default function NewCoursePage() {
                     />
                   </FormField>
 
-                  <FormField
-                    label="Full Course Syllabus & Overview"
-                    hint="Explain in detail what students will learn, lecture schedule, and exam strategy"
-                  >
-                    <textarea
-                      rows={4}
-                      value={fullDescription}
-                      onChange={(e) => setFullDescription(e.target.value)}
-                      placeholder="In this complete prep program, Professor Dr. Arshad Mahmood breaks down all high-yield physics units..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo/30 focus:border-brand-indigo"
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        Full Course Syllabus & Detailed Overview
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAiTopic(title || 'MDCAT / ECAT Comprehensive Course');
+                          setAiMode('SYLLABUS');
+                          setAiModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-indigo hover:text-brand-indigoHover transition-colors cursor-pointer"
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                        <span>Draft Syllabus with Gemini AI</span>
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Explain in detail what students will learn, lecture schedules, past-paper breakdown, and insert high-yield formulas or diagrams.
+                    </p>
+                    <RichTextEditor
+                      content={fullDescription}
+                      onChange={setFullDescription}
+                      placeholder="Detail the complete course syllabus, lecture schedule, exam breakdown, and recommended reference books..."
+                      onOpenAiAssistant={() => {
+                        setAiTopic(title || 'MDCAT / ECAT Comprehensive Course');
+                        setAiMode('SYLLABUS');
+                        setAiModalOpen(true);
+                      }}
                     />
-                  </FormField>
+                  </div>
                 </div>
 
                 {/* Eligibility Criteria ("Is this course right for me?") */}
@@ -667,30 +754,219 @@ export default function NewCoursePage() {
 
                 {/* Course Cover / Thumbnail Card */}
                 <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
-                  <h3 className="font-bold text-base text-slate-900 border-b border-slate-100 pb-3">
-                    Course Thumbnail Banner
-                  </h3>
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                      <ImageIcon className="h-4 w-4 text-brand-indigo" />
+                      <span>Course Thumbnail Banner</span>
+                    </h3>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                      16:9 Standard
+                    </span>
+                  </div>
 
-                  <div className="aspect-video w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner">
+                  {/* 16:9 Live Preview Display */}
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shadow-inner group">
                     <img
                       src={thumbnailUrl}
                       alt="Thumbnail Preview"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={() =>
                         setThumbnailUrl(
                           'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80'
                         )
                       }
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+                    <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/20">
+                      Live Student Card Preview
+                    </div>
+                    {thumbnailFileName && (
+                      <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-800 truncate shadow-xs flex items-center justify-between">
+                        <span className="truncate">📎 {thumbnailFileName}</span>
+                        <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-2">Ready</span>
+                      </div>
+                    )}
                   </div>
 
-                  <FormField label="Image URL" hint="Direct HTTPS image link (16:9 ratio recommended)">
-                    <Input
-                      placeholder="https://images.unsplash.com/..."
-                      value={thumbnailUrl}
-                      onChange={(e) => setThumbnailUrl(e.target.value)}
-                    />
-                  </FormField>
+                  {/* Mode Navigation Tabs */}
+                  <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => setThumbnailTab('upload')}
+                      className={cn(
+                        'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer',
+                        thumbnailTab === 'upload'
+                          ? 'bg-white text-brand-indigo shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      )}
+                    >
+                      <Upload className="h-3.5 w-3.5" />
+                      <span>Upload File</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setThumbnailTab('presets')}
+                      className={cn(
+                        'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer',
+                        thumbnailTab === 'presets'
+                          ? 'bg-white text-brand-indigo shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      )}
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Presets</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setThumbnailTab('url')}
+                      className={cn(
+                        'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer',
+                        thumbnailTab === 'url'
+                          ? 'bg-white text-brand-indigo shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      )}
+                    >
+                      <LinkIcon className="h-3.5 w-3.5" />
+                      <span>Direct URL</span>
+                    </button>
+                  </div>
+
+                  {/* TAB 1: FILE UPLOAD (DRAG & DROP / DEVICE BROWSE) */}
+                  {thumbnailTab === 'upload' && (
+                    <div className="space-y-3">
+                      <input
+                        ref={thumbnailFileInputRef}
+                        type="file"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleThumbnailFileUpload(file);
+                        }}
+                      />
+
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setIsDraggingThumbnail(true);
+                        }}
+                        onDragLeave={() => setIsDraggingThumbnail(false)}
+                        onDrop={handleThumbnailDrop}
+                        onClick={() => thumbnailFileInputRef.current?.click()}
+                        className={cn(
+                          'border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 bg-slate-50/70',
+                          isDraggingThumbnail
+                            ? 'border-brand-indigo bg-indigo-50/50 scale-[1.01]'
+                            : 'border-slate-300 hover:border-brand-indigo/60 hover:bg-slate-50'
+                        )}
+                      >
+                        <div className="p-3 bg-brand-indigo/10 rounded-full text-brand-indigo">
+                          <Upload className="h-5 w-5" />
+                        </div>
+                        <div className="text-xs">
+                          <span className="font-bold text-brand-indigo hover:underline">
+                            Click to upload image
+                          </span>{' '}
+                          <span className="text-slate-600">or drag and drop here</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400">
+                          PNG, JPG, or WebP (max 10MB). High resolution (1280x720 recommended).
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-1">
+                        <button
+                          type="button"
+                          onClick={() => thumbnailFileInputRef.current?.click()}
+                          className="font-bold text-brand-indigo hover:underline cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Upload className="h-3.5 w-3.5" />
+                          <span>Choose file from device</span>
+                        </button>
+                        {thumbnailFileName && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setThumbnailFileName(null);
+                              setThumbnailUrl(
+                                'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80'
+                              );
+                            }}
+                            className="font-semibold text-rose-600 hover:underline cursor-pointer flex items-center gap-1"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                            <span>Reset to default</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: CURATED ACADEMIC PRESETS */}
+                  {thumbnailTab === 'presets' && (
+                    <div className="space-y-2">
+                      <p className="text-xs text-slate-500">
+                        Choose a high-definition academic cover from our curated Pakistani syllabus library:
+                      </p>
+                      <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto pr-1">
+                        {THUMBNAIL_PRESETS.map((preset) => {
+                          const isSelected = thumbnailUrl === preset.url;
+                          return (
+                            <button
+                              key={preset.label}
+                              type="button"
+                              onClick={() => {
+                                setThumbnailUrl(preset.url);
+                                setThumbnailFileName(preset.label);
+                              }}
+                              className={cn(
+                                'flex items-center gap-3 p-2 rounded-xl border text-left transition-all cursor-pointer relative overflow-hidden',
+                                isSelected
+                                  ? 'border-brand-indigo bg-indigo-50/70 ring-2 ring-brand-indigo/20'
+                                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              )}
+                            >
+                              <img
+                                src={preset.url}
+                                alt={preset.label}
+                                className="w-14 h-10 object-cover rounded-lg shrink-0 border border-slate-200"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold text-slate-800 truncate">
+                                  {preset.label}
+                                </p>
+                                <span className="text-[10px] text-slate-500 block truncate">
+                                  {preset.tag}
+                                </span>
+                              </div>
+                              {isSelected && (
+                                <div className="p-1 bg-brand-indigo text-white rounded-full shrink-0">
+                                  <Check className="h-3 w-3" />
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: DIRECT WEB URL */}
+                  {thumbnailTab === 'url' && (
+                    <FormField
+                      label="Direct Image URL"
+                      hint="Paste an HTTPS link from Unsplash, Cloudinary, AWS S3, or your web server"
+                    >
+                      <Input
+                        placeholder="https://images.unsplash.com/..."
+                        value={thumbnailUrl}
+                        onChange={(e) => {
+                          setThumbnailUrl(e.target.value);
+                          setThumbnailFileName(null);
+                        }}
+                      />
+                    </FormField>
+                  )}
                 </div>
 
                 {/* Next Step Button */}
