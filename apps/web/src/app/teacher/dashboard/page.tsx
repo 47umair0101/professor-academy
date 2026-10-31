@@ -314,15 +314,13 @@ export default function TeacherDashboardPage() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <Button
-                  variant="primary"
-                  size="md"
+                <button
                   onClick={() => setActiveTab('my-courses')}
-                  className="font-bold text-xs shadow-sm"
+                  className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
                 >
-                  <PlusCircle className="h-4 w-4 mr-1.5" />
-                  <span>Create New Course</span>
-                </Button>
+                  <PlusCircle className="h-4 w-4 shrink-0" />
+                  <span>+ Create New Course</span>
+                </button>
               </div>
             </div>
 
@@ -395,7 +393,7 @@ export default function TeacherDashboardPage() {
                     </div>
 
                     <Link href="/courses">
-                      <Button variant="outline" size="sm" className="text-xs font-semibold">
+                      <Button variant="outline" size="md" className="text-xs font-semibold">
                         <span>Public Catalog View</span>
                         <ExternalLink className="h-3.5 w-3.5 ml-1" />
                       </Button>
@@ -421,7 +419,7 @@ export default function TeacherDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <Button variant="secondary" size="sm" className="text-xs">
+                        <Button variant="secondary" size="md" className="text-xs">
                           Edit Curriculum
                         </Button>
                       </div>
@@ -445,7 +443,7 @@ export default function TeacherDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <Button variant="secondary" size="sm" className="text-xs">
+                        <Button variant="secondary" size="md" className="text-xs">
                           Edit Curriculum
                         </Button>
                       </div>
@@ -476,7 +474,7 @@ export default function TeacherDashboardPage() {
                         &quot;Sir, in Lecture 1.2 projectile shortcut formula, why do we ignore air resistance for max range? Is it applicable for UHS test questions?&quot;
                       </p>
                       <div className="flex items-center justify-end gap-2 pt-1">
-                        <Button variant="primary" size="sm" className="text-xs">
+                        <Button variant="primary" size="md" className="text-xs">
                           Reply to Bilal
                         </Button>
                       </div>

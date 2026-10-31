@@ -513,10 +513,10 @@ export default function StudentDashboardPage() {
 
                   <button
                     onClick={() => setActiveTab('my-learning')}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs font-bold shadow-sm transition-all cursor-pointer"
+                    className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
                   >
                     <span>Go to My Learning</span>
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-4 w-4 shrink-0" />
                   </button>
                 </div>
 
@@ -598,7 +598,7 @@ export default function StudentDashboardPage() {
 
                           <div className="flex items-center gap-3 shrink-0">
                             <span className="text-xs font-bold font-mono text-slate-600">72%</span>
-                            <Button variant="secondary" size="sm" className="font-semibold text-xs">
+                            <Button variant="secondary" size="md" className="font-semibold text-xs">
                               Continue
                             </Button>
                           </div>
@@ -616,7 +616,7 @@ export default function StudentDashboardPage() {
 
                           <div className="flex items-center gap-3 shrink-0">
                             <span className="text-xs font-bold font-mono text-slate-600">45%</span>
-                            <Button variant="secondary" size="sm" className="font-semibold text-xs">
+                            <Button variant="secondary" size="md" className="font-semibold text-xs">
                               Continue
                             </Button>
                           </div>
@@ -634,7 +634,7 @@ export default function StudentDashboardPage() {
 
                           <div className="flex items-center gap-3 shrink-0">
                             <span className="text-xs font-bold font-mono text-slate-600">30%</span>
-                            <Button variant="secondary" size="sm" className="font-semibold text-xs">
+                            <Button variant="secondary" size="md" className="font-semibold text-xs">
                               Continue
                             </Button>
                           </div>
@@ -669,7 +669,7 @@ export default function StudentDashboardPage() {
                             </div>
                           </div>
 
-                          <Button variant="primary" size="sm" className="text-xs font-bold">
+                          <Button variant="primary" size="md" className="text-xs font-bold">
                             Join Class
                           </Button>
                         </div>
@@ -688,7 +688,7 @@ export default function StudentDashboardPage() {
                             </div>
                           </div>
 
-                          <Button variant="primary" size="sm" className="text-xs font-bold">
+                          <Button variant="primary" size="md" className="text-xs font-bold">
                             Join Class
                           </Button>
                         </div>
@@ -810,7 +810,7 @@ export default function StudentDashboardPage() {
                         Explore more resources in the library.
                       </p>
                       <Link href="/past-papers" className="block">
-                        <Button variant="outline" size="sm" className="w-full text-xs">
+                        <Button variant="outline" size="md" className="w-full text-xs font-semibold">
                           Browse Past Papers
                         </Button>
                       </Link>
@@ -832,7 +832,7 @@ export default function StudentDashboardPage() {
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
                   This section connects with Module 6, 7 & 8 (Fee Verification Queue, Student Course Player, and Live Quiz Engine).
                 </p>
-                <Button variant="secondary" size="sm" onClick={() => setActiveTab('dashboard')}>
+                <Button variant="secondary" size="md" onClick={() => setActiveTab('dashboard')}>
                   Back to Dashboard
                 </Button>
               </div>

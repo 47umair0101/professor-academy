@@ -476,15 +476,13 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <Button
-                      variant="primary"
-                      size="md"
+                    <button
                       onClick={() => setActiveTab('fee-queue')}
-                      className="font-bold text-xs shadow-sm"
+                      className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
                     >
-                      <Wallet className="h-4 w-4 mr-1.5" />
+                      <Wallet className="h-4 w-4 shrink-0" />
                       <span>Fee Verification Queue ({feeRequests.length})</span>
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
@@ -607,7 +605,7 @@ export default function AdminDashboardPage() {
                                     setSelectedReceiptUrl(req.receiptUrl);
                                     setReceiptModalOpen(true);
                                   }}
-                                  className="inline-flex flex-row items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200/90 bg-white text-brand-indigo hover:bg-indigo-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
+                                  className="inline-flex flex-row items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200/90 bg-white text-brand-indigo hover:bg-indigo-50 text-xs font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   <Eye className="h-3.5 w-3.5 text-brand-indigo shrink-0" />
                                   <span>View Receipt</span>
@@ -615,7 +613,7 @@ export default function AdminDashboardPage() {
 
                                 <button
                                   onClick={() => handleApproveFee(req.id)}
-                                  className="inline-flex flex-row items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
+                                  className="inline-flex flex-row items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   <CheckCircle2 className="h-3.5 w-3.5 text-white shrink-0" />
                                   <span>Approve</span>
@@ -623,7 +621,7 @@ export default function AdminDashboardPage() {
 
                                 <button
                                   onClick={() => handleRejectFee(req.id)}
-                                  className="inline-flex flex-row items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
+                                  className="inline-flex flex-row items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   <XCircle className="h-3.5 w-3.5 text-white shrink-0" />
                                   <span>Reject</span>
@@ -1096,10 +1094,13 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" variant="primary" size="md" className="font-bold text-xs shadow-md">
-                      <Save className="h-4 w-4 mr-2" />
+                    <button
+                      type="submit"
+                      className="inline-flex flex-row items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
+                    >
+                      <Save className="h-4 w-4 shrink-0" />
                       <span>Save Changes to Database</span>
-                    </Button>
+                    </button>
                   </div>
                 </form>
               </div>
@@ -1387,7 +1388,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-end gap-2.5 pt-2">
               <Button
                 variant="outline"
-                size="sm"
+                size="md"
                 onClick={() => {
                   handleRejectCourse(selectedCourseForPreview.id);
                   setCoursePreviewModalOpen(false);
@@ -1399,7 +1400,7 @@ export default function AdminDashboardPage() {
 
               <Button
                 variant="primary"
-                size="sm"
+                size="md"
                 onClick={() => {
                   handleApproveCourse(selectedCourseForPreview.id);
                   setCoursePreviewModalOpen(false);
@@ -1434,7 +1435,7 @@ export default function AdminDashboardPage() {
             Verify transaction ID (TID) against the merchant SMS statement before approving access.
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="secondary" size="sm" onClick={() => setReceiptModalOpen(false)}>
+            <Button variant="secondary" size="md" onClick={() => setReceiptModalOpen(false)}>
               Close
             </Button>
           </div>
