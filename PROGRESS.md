@@ -4,7 +4,7 @@
 **Apps:** `apps/web` (Next.js 15 App Router), `apps/mobile` (React Native Expo + NativeWind)  
 **Packages:** `packages/shared` (Types, Zod schemas, constants, tokens), `packages/ui` (Shared design components)  
 **GitHub Repository:** [https://github.com/47umair0101/professor-academy](https://github.com/47umair0101/professor-academy)  
-**Status:** In Progress (Module 2 Completed & Pushed, Module 3 Ready)
+**Status:** In Progress (Module 3 Completed, Module 4 Ready)
 
 ---
 
@@ -14,8 +14,8 @@
 |---|---|---|---|---|---|
 | **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | `52d06ea` / `9a0b0dc` |
 | **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | `7a15961` |
-| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ⚪ Next | ⚪ Pending | - |
-| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ⚪ Pending | ⚪ Pending | - |
+| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | Pending Push |
+| **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ⚪ Next | ⚪ Pending | - |
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Pending | ⚪ Pending | - |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini OCR receipt scan, Admin verification queue | ⚪ Pending | ⚪ Pending | - |
 | **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ⚪ Pending | ⚪ Pending | - |
@@ -60,3 +60,28 @@
   - **Teacher Dashboard (`/teacher/dashboard`):** Teacher console, 80/20 sales split counter, enrolled student statistics.
   - **Admin Dashboard (`/admin/dashboard`):** Superuser center, fee verification queue count, platform metrics.
   - Unauthorized access protection (403 guard redirecting users to their proper role area).
+
+---
+
+## 🕒 Module 3 Changelog & Details
+- **Course Catalog (`/courses`):**
+  - Full search bar with instant debounce keyword lookup.
+  - Multi-faceted sidebar filtering (Categories: MDCAT, ECAT, FBISE, Cambridge, CSS, Computer Science; Levels: Entry Test, Intermediate, Competitive, Skill; Pricing: All, Free, Paid; Star Ratings).
+  - Responsive Course Card grid showing thumbnails, category pills, verified faculty, star ratings, PKR pricing, and dedicated **Eligibility Criteria Snippets**.
+  - Dynamic active filter pills with 1-click removal and empty state with reset trigger.
+- **Single Course Detail Page (`/courses/[slug]`):**
+  - High-impact dark header with academic category, level, syllabus alignment (PMDC/FBISE), and bilingual lecture badges.
+  - **Dedicated Eligibility Criteria Section ("Is This Course Right For You?")**: Outlines minimum required qualification (e.g. FSc Pre-Medical 65%+), recommended foundation, target aspirants, and prerequisites.
+  - Interactive Course Curriculum accordion with collapsible sections, lecture counts, durations, and free sample preview buttons.
+  - Free Video Preview Modal with responsive video player and direct enrollment CTA.
+  - Instructor profile showcase with student metrics, lead faculty bio, and rating.
+  - Sticky pricing box with localized Pakistani payment badges (Meezan, JazzCash, Easypaisa).
+- **Past Papers Vault (`/past-papers`):**
+  - Filterable public archive for examination bodies (`FBISE`, `BISE Lahore`, `UHS MDCAT`, `ECAT UET`, `Cambridge CAIE`, `FPSC CSS`).
+  - Search by exam title, year (2020–2024), subject, or paper code.
+  - Solved papers with verified marking schemes filter.
+  - Interactive In-App PDF Reader Modal with zoom, page counts, syllabus topic breakdown, and direct download action with success toast.
+- **Public Core Pages:**
+  - **About Page (`/about`):** Mission, 4-pillar academic pedagogy (High-yield concepts, Past paper drills, Gemini AI tutor, Local fee accessibility), leadership team, and student metrics.
+  - **Contact Page (`/contact`):** Interactive inquiry form with client validation, WhatsApp helpline, support email, operating hours, and physical campus addresses (Lahore, Islamabad, Karachi).
+

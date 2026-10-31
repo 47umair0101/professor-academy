@@ -1,0 +1,138 @@
+export interface PastPaperItem {
+  id: string;
+  title: string;
+  examBoard: 'FBISE' | 'BISE Lahore' | 'BISE Rawalpindi' | 'UHS MDCAT' | 'ECAT UET' | 'Cambridge CAIE' | 'FPSC CSS';
+  year: number;
+  subject: 'Physics' | 'Chemistry' | 'Biology' | 'Mathematics' | 'English' | 'Computer Science';
+  level: 'SSC (Matric)' | 'HSSC (FSc)' | 'Entry Test' | 'O/A Level' | 'Competitive';
+  paperCode: string;
+  isSolved: boolean;
+  fileSizeMb: number;
+  downloadsCount: number;
+  pagesCount: number;
+  topicsCovered: string[];
+  pdfPreviewUrl: string;
+}
+
+export const MOCK_PAST_PAPERS: PastPaperItem[] = [
+  {
+    id: 'pp-1',
+    title: 'FBISE Physics HSSC-I (Annual Examination 2024)',
+    examBoard: 'FBISE',
+    year: 2024,
+    subject: 'Physics',
+    level: 'HSSC (FSc)',
+    paperCode: 'FBISE-HSSC1-PHY-2024',
+    isSolved: true,
+    fileSizeMb: 4.8,
+    downloadsCount: 12480,
+    pagesCount: 16,
+    topicsCovered: ['Scalars & Vectors', 'Work & Energy', 'Rotational Motion', 'Fluid Dynamics', 'Thermodynamics'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-2',
+    title: 'UHS Official MDCAT Paper with Complete Answer Keys & Explanations',
+    examBoard: 'UHS MDCAT',
+    year: 2023,
+    subject: 'Biology',
+    level: 'Entry Test',
+    paperCode: 'UHS-MDCAT-2023-BIO',
+    isSolved: true,
+    fileSizeMb: 6.2,
+    downloadsCount: 28900,
+    pagesCount: 24,
+    topicsCovered: ['Cell Biology', 'Biological Molecules', 'Human Physiology', 'Genetics & Evolution', 'Biotechnology'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-3',
+    title: 'BISE Lahore Chemistry HSSC-II (Annual Examination 2024)',
+    examBoard: 'BISE Lahore',
+    year: 2024,
+    subject: 'Chemistry',
+    level: 'HSSC (FSc)',
+    paperCode: 'LHR-HSSC2-CHM-2024',
+    isSolved: true,
+    fileSizeMb: 3.9,
+    downloadsCount: 8940,
+    pagesCount: 12,
+    topicsCovered: ['Periodic Classification', 's-Block & p-Block Elements', 'Organic Hydrocarbons', 'Alkyl Halides', 'Macromolecules'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-4',
+    title: 'ECAT UET Lahore Mathematics Comprehensive Entrance Exam',
+    examBoard: 'ECAT UET',
+    year: 2024,
+    subject: 'Mathematics',
+    level: 'Entry Test',
+    paperCode: 'UET-ECAT-2024-MATH',
+    isSolved: true,
+    fileSizeMb: 5.1,
+    downloadsCount: 15300,
+    pagesCount: 20,
+    topicsCovered: ['Functions & Limits', 'Differentiation', 'Definite Integrals', 'Conic Sections', 'Vectors in 3D'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-5',
+    title: 'Cambridge CAIE A-Level Biology 9700 Paper 42 Structured Questions',
+    examBoard: 'Cambridge CAIE',
+    year: 2023,
+    subject: 'Biology',
+    level: 'O/A Level',
+    paperCode: 'CAIE-9700-42-W23',
+    isSolved: true,
+    fileSizeMb: 7.4,
+    downloadsCount: 6420,
+    pagesCount: 28,
+    topicsCovered: ['Energy & Respiration', 'Photosynthesis (C3/C4)', 'Homeostasis & Kidney Nephron', 'Gene Technology & CRISPR'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-6',
+    title: 'FPSC CSS English Essay Official Examination Paper',
+    examBoard: 'FPSC CSS',
+    year: 2024,
+    subject: 'English',
+    level: 'Competitive',
+    paperCode: 'FPSC-CSS-2024-ESSAY',
+    isSolved: false,
+    fileSizeMb: 1.2,
+    downloadsCount: 19800,
+    pagesCount: 4,
+    topicsCovered: ['AI & Future of Human Work', 'Climate Governance in South Asia', 'Polarization in Democratic Institutions'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-7',
+    title: 'FBISE Computer Science HSSC-I (Federal Board 2023)',
+    examBoard: 'FBISE',
+    year: 2023,
+    subject: 'Computer Science',
+    level: 'HSSC (FSc)',
+    paperCode: 'FBISE-HSSC1-CS-2023',
+    isSolved: true,
+    fileSizeMb: 3.2,
+    downloadsCount: 5120,
+    pagesCount: 10,
+    topicsCovered: ['Computer Architecture', 'Operating Systems', 'Data Communication & Networking', 'Information Security'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    id: 'pp-8',
+    title: 'BISE Rawalpindi Mathematics SSC-II (Matric 10th Class 2024)',
+    examBoard: 'BISE Rawalpindi',
+    year: 2024,
+    subject: 'Mathematics',
+    level: 'SSC (Matric)',
+    paperCode: 'RWP-SSC2-MTH-2024',
+    isSolved: false,
+    fileSizeMb: 2.5,
+    downloadsCount: 7800,
+    pagesCount: 8,
+    topicsCovered: ['Quadratic Equations', 'Theory of Quadratic Equations', 'Variations & Proportions', 'Basic Statistics', 'Trigonometry'],
+    pdfPreviewUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+];
