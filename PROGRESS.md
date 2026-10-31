@@ -12,7 +12,7 @@
 | # | Module | Scope / Key Deliverables | Status | Smoke Tests | Git Commit |
 |---|---|---|---|---|---|
 | **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic Navy/Gold/Cream palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | Initial Commit |
-| **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ⚪ Pending | ⚪ Pending | - |
+| **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | In Progress |
 | **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ⚪ Pending | ⚪ Pending | - |
 | **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ⚪ Pending | ⚪ Pending | - |
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Pending | ⚪ Pending | - |
@@ -43,3 +43,19 @@
   - Modern floating-feel Navbar with Command-K search bar & quick Role Simulator
   - Dark Slate Footer with Pakistani payment method badges (Meezan, JazzCash, Easypaisa)
 - Deployed interactive showcase at `/design-preview` and homepage at `/`.
+
+---
+
+## 🕒 Module 2 Changelog & Details
+- Created complete PostgreSQL / Supabase production schema in `supabase/schema.sql` (enums, `profiles`, `courses`, `lessons`, `enrollments`, `quizzes`, `notifications`, `past_papers`, `certificates`, composite indexes for 10,000+ scale, RLS policies, and auto profile creation trigger).
+- Configured Supabase SSR client utilities in `apps/web/src/lib/supabase/` (`client.ts` and `server.ts`).
+- Built central `AuthProvider` and `useAuth()` hook in `apps/web/src/lib/auth/auth-context.tsx` with session persistence, role routing, and seed test accounts.
+- Built Pixel-Perfect Split-Screen Authentication matching user's custom designs:
+  - **Login Page (`/login`):** "Professor Online ACADEMY" branding, custom student illustration with progress card, floating white login card, "Remember me", "Forgot password?", 1-click Demo Account filler for Student/Teacher/Admin, and secure login notice.
+  - **Sign Up Page (`/signup`):** Full student registration (Full Name, Email, Pakistani Phone Number, City, Program Selector, Password, Confirm Password, Terms Agreement checkbox).
+  - **Forgot Password Page (`/forgot-password`):** Password reset request flow with success feedback and back to login link.
+- Implemented Role-Based Access Control (RBAC) via `<RoleGuard>`:
+  - **Student Dashboard (`/student/dashboard`):** Student welcome, enrolled program, course counters.
+  - **Teacher Dashboard (`/teacher/dashboard`):** Teacher console, 80/20 sales split counter, enrolled student statistics.
+  - **Admin Dashboard (`/admin/dashboard`):** Superuser center, fee verification queue count, platform metrics.
+  - Unauthorized access protection (403 guard redirecting users to their proper role area).

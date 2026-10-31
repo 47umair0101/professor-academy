@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AuthProvider } from '@/lib/auth/auth-context';
 
 export const metadata: Metadata = {
   title: 'Professor Academy — Online Learning & Academic Portal',
@@ -13,8 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-udemy-textPrimary font-sans antialiased flex flex-col">
-        {children}
+      <body className="min-h-screen bg-white text-slate-900 font-sans antialiased flex flex-col">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

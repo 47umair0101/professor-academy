@@ -17,14 +17,19 @@ import {
 } from 'lucide-react';
 import type { UserRole } from '@professor-academy/shared';
 
+import { useAuth } from '@/lib/auth/auth-context';
+
 export interface NavbarProps {
   currentRole?: UserRole | null;
   onRoleSwitch?: (role: UserRole | null) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentRole = null, onRoleSwitch }) => {
+export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleSwitch }) => {
+  const { user, role: authRole, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const pathname = usePathname();
+
+  const effectiveRole = currentRole !== undefined ? currentRole : authRole;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
@@ -153,12 +158,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRole = null, onRoleSwitch
             </div>
           )}
 
-          {currentRole ? (
-            <Link href={`/${currentRole.toLowerCase()}/dashboard`}>
-              <Button size="sm" variant="primary">
-                {currentRole} Dashboard
+          {effectiveRole ? (
+            <div className="flex items-center gap-2">
+              <Link href={`/${effectiveRole.toLowerCase()}/dashboard`}>
+                <Button size="sm" variant="primary">
+                  {effectiveRole} Dashboard
+                </Button>
+              </Link>
+              <Button size="sm" variant="ghost" onClick={logout}>
+                Sign Out
               </Button>
-            </Link>
+            </div>
           ) : (
             <div className="flex items-center gap-2">
               <Link href="/login">
