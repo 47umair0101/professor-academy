@@ -383,7 +383,99 @@ Do not enclose in markdown code fences; return raw JSON only.`;
   }
 
   /**
-   * 4. Multi-modal Receipt OCR for Pakistani Banking & Mobile Wallets
+   * 4. Contextual AI Study Tutor ("Professor AI") for Live Lessons
+   */
+  static async askStudyTutor(input: {
+    courseTitle: string;
+    lessonTitle: string;
+    lessonContent?: string;
+    studentQuestion: string;
+    chatHistory?: Array<{ sender: 'student' | 'tutor'; text: string }>;
+  }): Promise<{ reply: string; suggestedFollowUps: string[] }> {
+    const ai = this.getClient();
+
+    if (ai) {
+      try {
+        const historyText = input.chatHistory && input.chatHistory.length > 0
+          ? input.chatHistory.map(h => `${h.sender === 'student' ? 'Student' : 'Professor AI'}: ${h.text}`).join('\n')
+          : 'None';
+
+        const prompt = `You are "Professor AI", a top-tier Pakistani academic tutor and mentor at Professor Online Academy.
+You are currently tutoring a student who is studying the following lecture:
+Course: "${input.courseTitle}"
+Current Lesson: "${input.lessonTitle}"
+Lesson Notes / Summary:
+"""
+${(input.lessonContent || 'Core syllabus topic for Pakistani entry test & academic examinations.').slice(0, 1500)}
+"""
+
+Conversation History:
+${historyText}
+
+Student's Question:
+"${input.studentQuestion}"
+
+Guidelines for your response:
+1. Speak in a respectful, warm, encouraging, and authoritative academic tone (like a beloved Pakistani professor).
+2. Use clear bilingual English with natural Urdu motivational words if helpful (e.g. "Beta", "Zabardast sawal", "Dhyaan dein").
+3. Break down the concept into simple, intuitive bullet points or numbered steps.
+4. Give an actionable exam tip or formula shortcut specifically relevant to PMDC, UHS, ECAT, or FBISE/BISE patterns.
+5. Provide 2-3 short, relevant suggested follow-up questions the student might want to ask next.
+
+Respond STRICTLY in valid JSON matching this schema:
+{
+  "reply": "Your full formatted markdown explanation with bold highlights, bullets, or formula blocks...",
+  "suggestedFollowUps": [
+    "Suggested question 1...",
+    "Suggested question 2...",
+    "Suggested question 3..."
+  ]
+}
+Do not enclose in markdown code fences; return raw JSON only.`;
+
+        const response = await ai.models.generateContent({
+          model: GEMINI_MODEL,
+          contents: prompt,
+        });
+
+        const text = response.text || '';
+        const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          return {
+            reply: parsed.reply || 'Great question! Let me break that down for you.',
+            suggestedFollowUps: Array.isArray(parsed.suggestedFollowUps) ? parsed.suggestedFollowUps : [
+              'Can you give me a past-paper numerical example?',
+              'What is the shortcut formula for this?',
+              'Which trap do examiners set on this topic?'
+            ],
+          };
+        }
+      } catch (err) {
+        console.error('Gemini Study Tutor API call failed, using high-yield fallback:', err);
+      }
+    }
+
+    // High-Yield Academic Fallback
+    return {
+      reply: `Zabardast sawal, beta! Regarding **${input.lessonTitle}** in **${input.courseTitle}**:
+
+1. **Core Concept:** In Pakistani exam boards (PMDC/UHS/ECAT), this principle directly tests your ability to relate proportional variables without calculator computation.
+2. **Key Rule:** Always identify whether the system is closed or open, and verify your SI units (convert cm to meters and grams to kg before applying formulas).
+3. **Past Paper Tip:** Examiners frequently set distractors where the sign or square root is missed. Keep your pencil steady and review step 2 before picking your option.
+
+Would you like a sample past-paper MCQ on this exact concept?`,
+      suggestedFollowUps: [
+        'Can you give me an MDCAT past paper MCQ on this?',
+        'What is the common formula shortcut for this topic?',
+        'How should I manage time during this type of question?'
+      ],
+    };
+  }
+
+  /**
+   * 5. Multi-modal Receipt OCR for Pakistani Banking & Mobile Wallets
    * (Meezan Bank, JazzCash, Easypaisa, SadaPay, NayaPay, HBL, Allied Bank)
    */
   static async extractReceiptDetails(

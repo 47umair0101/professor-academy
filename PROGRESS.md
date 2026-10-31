@@ -17,8 +17,8 @@
 | **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ✅ Completed | ✅ All Passed | `22329a1` |
 | **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ✅ Completed | ✅ All Passed | `ffda176` |
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, Tiptap academic editor with image upload, thumbnail file uploader & presets, Gemini AI Co-Pilot | ✅ Completed | ✅ All Passed | `5fdced7` / `740715f` |
-| **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini Vision OCR receipt scanner, Admin verification queue, Student fee history | ✅ Completed | ✅ All Passed | `Pending Push` |
-| **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ⚪ Pending | ⚪ Pending | - |
+| **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini Vision OCR receipt scanner, Admin verification queue, Student fee history | ✅ Completed | ✅ All Passed | `6d2bd1d` |
+| **7** | **Student Dashboard, Course Player & AI Study Tutor** | Video + rich reading player, Topic discussions, Gemini AI contextual tutor, PDF certificates | ✅ Completed | ✅ All Passed | `Pending Push` |
 | **8** | **Quiz Engine, Hybrid Grading & Notifications** | Timed Quiz player, Written Q/A AI+Manual grading, In-App + Email (Resend/SMTP) notifications | ⚪ Pending | ⚪ Pending | - |
 | **9** | **React Native (Expo) Mobile App** | Cross-platform Student, Teacher & Admin mobile experience with NativeWind | ⚪ Pending | ⚪ Pending | - |
 | **10** | **E2E Testing, Security Audit & Final Handover** | Full test suite, RLS verification, 10,000+ scale check, production documentation | ⚪ Pending | ⚪ Pending | - |
@@ -167,6 +167,36 @@
 - **Dynamic Course Page (`/courses/[slug]`) CTA Integration:**
   - Real-time user enrollment state check.
   - Displays "Enrolled • Continue Learning" if active, "Payment Under Review" if pending, "Receipt Rejected • Resubmit" if rejected, or "Enroll & Pay (PKR X,XXX)" for new admissions.
+  - High-resolution receipt inspector modal with zoom in/out, reset, object-contain, and original link.
+
+---
+
+## 🕒 Module 7 Changelog & Details
+- **Course Learning Player (`/student/courses/[slug]/learn`):**
+  - Built comprehensive video & rich-text lecture player in `apps/web/src/app/student/courses/[slug]/learn/page.tsx`.
+  - Responsive media container supporting YouTube video embeds, HTML5 video, and formatted academic reading lectures with formulas and diagrams.
+  - Lecture Control Bar: Previous Lesson, Next Lesson, and "Mark as Completed ✓" button syncing in real time with PostgreSQL `public.lesson_progress`.
+  - Tabbed lecture workspace: Lesson Notes & Key Takeaways, Topic Q&A Discussion, and Formula Sheet & Resource Downloads.
+  - Collapsible curriculum accordion sidebar with section progress, completion checkmarks, lesson durations, and auto-resume.
+- **Topic-Level Discussion Q&A Engine:**
+  - Integrated threaded questions and answers under every lecture backed by Supabase `public.lesson_comments`.
+  - Student question submission with live refresh.
+  - Instructor responses marked with official "Instructor" / "Verified Faculty" badge in gold/amber.
+  - Admin/Teacher moderation controls to delete inappropriate comments.
+- **Contextual Gemini AI Study Tutor ("Professor AI"):**
+  - Built interactive sliding drawer with dedicated study tutor co-pilot.
+  - Connected to backend API `POST /api/ai/study-tutor` powered by `@google/genai` model `gemini-3.5-flash-lite`.
+  - Context-aware tutor knows current course title, lecture name, notes, and chat history.
+  - Provides step-by-step explanations, past paper tips (PMDC/UHS/ECAT/FBISE), formula shortcuts, and dynamic suggested follow-up chips.
+- **Verifiable Academic Completion Certificate & Public Registry:**
+  - Automatic celebration & certificate claim prompt when course progress reaches 100%.
+  - Unique verification code generation (`PA-2026-XXXXX`) recorded in `public.certificates`.
+  - Built official `AcademicCertificate` visual document component with gold seal, double borders, instructor & director signatures, and print/PDF support.
+  - Public verification route (`/verify-certificate/[code]`) allowing universities, students, and employers to verify authentic credentials.
+- **Student Dashboard Integration (`/student/dashboard`):**
+  - Connected "My Learning" and "Continue Learning" views to real enrolled courses from `public.enrollments` and `public.lesson_progress`.
+  - Dynamic progress bars with live completion percentage and "Continue Learning" button leading straight to course player.
+  - Course landing page CTA ("Enrolled • Continue Learning") routes directly into the course player.
 
 
 

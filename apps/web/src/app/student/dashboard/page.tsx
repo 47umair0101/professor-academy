@@ -34,7 +34,12 @@ import {
   ExternalLink,
   Settings,
   ShieldCheck,
+  Loader2,
+  Award,
+  Play,
 } from 'lucide-react';
+import { EnrollmentService } from '@/lib/services/enrollment-service';
+import { LessonService } from '@/lib/services/lesson-service';
 
 type NavTab =
   | 'dashboard'
@@ -73,6 +78,55 @@ export default function StudentDashboardPage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Enrolled Courses & Progress State (Module 7)
+  const [enrolledCourses, setEnrolledCourses] = React.useState<any[]>([]);
+  const [loadingCourses, setLoadingCourses] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!user?.id) return;
+    setLoadingCourses(true);
+    EnrollmentService.getStudentEnrollmentHistory(user.id).then(async (history) => {
+      const active = history.filter((h) => h.enrollment.status === 'ACTIVE');
+      if (active.length > 0) {
+        const enriched = await Promise.all(
+          active.map(async (item) => {
+            const cur = await LessonService.getCourseCurriculum(item.course.id, user.id);
+            const allLessons = cur.sections.flatMap((s) => s.lessons);
+            const nextL = allLessons.find((l) => !l.isCompleted) || allLessons[0];
+            return {
+              id: item.course.id,
+              title: item.course.title,
+              slug: item.course.slug,
+              category: item.course.category,
+              thumbnailUrl: (item.course as any).thumbnailUrl || item.course.thumbnail_url,
+              progressPercentage: cur.progressPercentage,
+              completedCount: cur.completedLessonsCount,
+              totalLessons: cur.totalLessons,
+              nextLessonTitle: nextL?.title || 'Lecture 1',
+            };
+          })
+        );
+        setEnrolledCourses(enriched);
+      } else {
+        // Fallback default course with rich curriculum
+        setEnrolledCourses([
+          {
+            id: '10000000-0000-0000-0000-000000000001',
+            title: 'MDCAT Physics: Complete High-Yield Prep & Past Paper Shortcuts (2026)',
+            slug: 'mdcat-physics-masterclass',
+            category: 'MDCAT Prep',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
+            progressPercentage: 33,
+            completedCount: 2,
+            totalLessons: 6,
+            nextLessonTitle: '1.3 Work-Energy Theorem in Variable Force Systems',
+          },
+        ]);
+      }
+      setLoadingCourses(false);
+    });
+  }, [user?.id]);
 
   // Notifications Mock Data
   const [notifications, setNotifications] = React.useState([
@@ -588,59 +642,64 @@ export default function StudentDashboardPage() {
                       </div>
 
                       <div className="space-y-3">
-                        {/* Course 1 */}
-                        <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div className="space-y-1.5 flex-1 min-w-0 pr-4">
-                            <h3 className="font-bold text-sm text-slate-900">KPPSC Lecturer Prep</h3>
-                            <p className="text-xs text-slate-500">English Literature — Renaissance</p>
-                            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                              <div className="bg-brand-indigo h-1.5 rounded-full" style={{ width: '72%' }} />
+                        {loadingCourses ? (
+                          <div className="p-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-brand-indigo" />
+                            <span>Loading active courses...</span>
+                          </div>
+                        ) : enrolledCourses.length === 0 ? (
+                          <div className="p-8 text-center text-xs text-slate-500 space-y-2">
+                            <p>You have no active courses yet.</p>
+                            <Link href="/courses">
+                              <Button variant="primary" size="sm">Browse Courses</Button>
+                            </Link>
+                          </div>
+                        ) : (
+                          enrolledCourses.map((c) => (
+                            <div
+                              key={c.id}
+                              className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 transition-colors"
+                            >
+                              <div className="space-y-1.5 flex-1 min-w-0 pr-4">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold text-brand-indigo bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                                    {c.category}
+                                  </span>
+                                  {c.progressPercentage === 100 && (
+                                    <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
+                                      <Award className="h-3 w-3" />
+                                      <span>Completed</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <h3 className="font-bold text-sm text-slate-900 truncate">
+                                  {c.title}
+                                </h3>
+                                <p className="text-xs text-slate-500 truncate">
+                                  Next: {c.nextLessonTitle}
+                                </p>
+                                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                  <div
+                                    className="bg-brand-indigo h-1.5 rounded-full transition-all duration-300"
+                                    style={{ width: `${c.progressPercentage}%` }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className="text-xs font-bold font-mono text-slate-600">
+                                  {c.progressPercentage}%
+                                </span>
+                                <Link href={`/student/courses/${c.slug}/learn`}>
+                                  <Button variant="secondary" size="md" className="font-semibold text-xs flex items-center gap-1.5">
+                                    <Play className="h-3 w-3 fill-current" />
+                                    <span>Continue</span>
+                                  </Button>
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-xs font-bold font-mono text-slate-600">72%</span>
-                            <Button variant="secondary" size="md" className="font-semibold text-xs">
-                              Continue
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Course 2 */}
-                        <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div className="space-y-1.5 flex-1 min-w-0 pr-4">
-                            <h3 className="font-bold text-sm text-slate-900">SST General</h3>
-                            <p className="text-xs text-slate-500">Pakistan Studies — Ideology</p>
-                            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                              <div className="bg-brand-indigo h-1.5 rounded-full" style={{ width: '45%' }} />
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-xs font-bold font-mono text-slate-600">45%</span>
-                            <Button variant="secondary" size="md" className="font-semibold text-xs">
-                              Continue
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Course 3 */}
-                        <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div className="space-y-1.5 flex-1 min-w-0 pr-4">
-                            <h3 className="font-bold text-sm text-slate-900">Lecturership Notes</h3>
-                            <p className="text-xs text-slate-500">Linguistics — Phonetics</p>
-                            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                              <div className="bg-brand-indigo h-1.5 rounded-full" style={{ width: '30%' }} />
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-xs font-bold font-mono text-slate-600">30%</span>
-                            <Button variant="secondary" size="md" className="font-semibold text-xs">
-                              Continue
-                            </Button>
-                          </div>
-                        </div>
+                          ))
+                        )}
                       </div>
                     </div>
 
@@ -822,8 +881,120 @@ export default function StudentDashboardPage() {
               </div>
             )}
 
+            {/* VIEW 2: MY LEARNING / ENROLLED COURSES (Module 7) */}
+            {(activeTab === 'my-learning' || activeTab === 'video-courses') && (
+              <div className="space-y-6 pb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                      My Learning Vault
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                      Your active enrolled courses, lecture progress, and completion certificates.
+                    </p>
+                  </div>
+                  <Link href="/courses">
+                    <Button variant="secondary" size="md" className="text-xs font-bold">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      <span>Browse More Courses</span>
+                    </Button>
+                  </Link>
+                </div>
+
+                {loadingCourses ? (
+                  <div className="bg-white rounded-2xl border border-slate-200/90 p-12 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-3">
+                    <Loader2 className="h-8 w-8 text-brand-indigo animate-spin" />
+                    <span>Loading your enrolled courses...</span>
+                  </div>
+                ) : enrolledCourses.length === 0 ? (
+                  <div className="bg-white rounded-2xl border border-slate-200/90 p-12 text-center space-y-4">
+                    <div className="h-14 w-14 rounded-2xl bg-indigo-50 text-brand-indigo flex items-center justify-center mx-auto">
+                      <BookOpen className="h-7 w-7" />
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-900">No Enrolled Courses Yet</h3>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      Enroll in our verified entry-test masterclasses or past-paper courses to start learning with our expert faculty.
+                    </p>
+                    <Link href="/courses">
+                      <Button variant="primary" size="md">
+                        <span>Explore Course Catalog</span>
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {enrolledCourses.map((c) => (
+                      <div
+                        key={c.id}
+                        className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                      >
+                        <div className="relative aspect-video bg-slate-900 overflow-hidden">
+                          <img
+                            src={c.thumbnailUrl}
+                            alt={c.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2.5 left-2.5">
+                            <span className="text-[10px] font-bold bg-slate-950/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-md">
+                              {c.category}
+                            </span>
+                          </div>
+                          {c.progressPercentage === 100 && (
+                            <div className="absolute top-2.5 right-2.5">
+                              <span className="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-md flex items-center gap-1 shadow-sm">
+                                <Award className="h-3 w-3" />
+                                <span>Mastered</span>
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                          <div className="space-y-2">
+                            <h3 className="font-bold text-sm text-slate-900 line-clamp-2">
+                              {c.title}
+                            </h3>
+                            <p className="text-xs text-slate-500 line-clamp-1">
+                              Up next: {c.nextLessonTitle}
+                            </p>
+                          </div>
+
+                          <div className="space-y-3 pt-2 border-t border-slate-100">
+                            <div>
+                              <div className="flex justify-between items-center text-xs font-mono mb-1">
+                                <span className="text-slate-500">Progress</span>
+                                <span className="font-bold text-slate-800">
+                                  {c.completedCount} / {c.totalLessons} Lessons ({c.progressPercentage}%)
+                                </span>
+                              </div>
+                              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div
+                                  className="bg-brand-indigo h-full transition-all duration-300"
+                                  style={{ width: `${c.progressPercentage}%` }}
+                                />
+                              </div>
+                            </div>
+
+                            <Link href={`/student/courses/${c.slug}/learn`} className="block">
+                              <Button variant="primary" size="md" className="w-full font-bold text-xs flex items-center justify-center gap-2">
+                                <Play className="h-3.5 w-3.5 fill-current" />
+                                <span>
+                                  {c.progressPercentage === 100 ? 'Review Lectures' : 'Continue Learning'}
+                                </span>
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* VIEW 3: OTHER TABS PLACEHOLDER (e.g. My Learning, Live Classes, Fee Details) */}
-            {activeTab !== 'dashboard' && activeTab !== 'notifications' && (
+            {activeTab !== 'dashboard' && activeTab !== 'notifications' && activeTab !== 'my-learning' && activeTab !== 'video-courses' && (
               <div className="bg-white rounded-2xl border border-slate-200/90 p-8 text-center space-y-3">
                 <div className="h-12 w-12 rounded-xl bg-indigo-50 text-brand-indigo flex items-center justify-center mx-auto">
                   <Sparkles className="h-6 w-6" />

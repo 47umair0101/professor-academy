@@ -503,7 +503,7 @@ export default function CourseDetailPage() {
                 {/* Dynamic Enroll CTA */}
                 <div className="space-y-2.5">
                   {enrollment?.status === 'ACTIVE' ? (
-                    <Link href={`/student/dashboard`}>
+                    <Link href={`/student/courses/${slug}/learn`}>
                       <Button variant="primary" size="lg" className="w-full text-sm font-bold shadow-md bg-emerald-600 hover:bg-emerald-700">
                         <CheckCircle2 className="h-4 w-4 mr-2" />
                         <span>Enrolled • Continue Learning</span>
