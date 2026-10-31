@@ -56,9 +56,9 @@
   - **Sign Up Page (`/signup`):** Full student registration (Full Name, Email, Pakistani Phone Number, City, Program Selector, Password, Confirm Password, Terms Agreement checkbox).
   - **Forgot Password Page (`/forgot-password`):** Password reset request flow with success feedback and back to login link.
 - Implemented Role-Based Access Control (RBAC) via `<RoleGuard>`:
-  - **Student Dashboard (`/student/dashboard`):** Student welcome, enrolled program, course counters.
-  - **Teacher Dashboard (`/teacher/dashboard`):** Teacher console, 80/20 sales split counter, enrolled student statistics.
-  - **Admin Dashboard (`/admin/dashboard`):** Superuser center, fee verification queue count, platform metrics.
+  - **Student Dashboard (`/student/dashboard`):** Unified modern layout matching user's custom designs with fixed viewport sidebar, pinned bottom logout, interactive profile dropdown, and notification tabs.
+  - **Teacher Dashboard (`/teacher/dashboard`):** Modern faculty console with course management, Gemini AI co-pilot preview, student Q&A threads, and 80/20 revenue breakdown in PKR.
+  - **Admin Dashboard (`/admin/dashboard`):** Superuser command center with manual fee verification queue (Meezan/JazzCash/Easypaisa), teacher provisioning, and interactive direct publish toggles.
   - Unauthorized access protection (403 guard redirecting users to their proper role area).
 
 ---
