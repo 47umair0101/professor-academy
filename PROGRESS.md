@@ -3,7 +3,8 @@
 **Target Architecture:** Monorepo (Turborepo + pnpm workspaces)  
 **Apps:** `apps/web` (Next.js 15 App Router), `apps/mobile` (React Native Expo + NativeWind)  
 **Packages:** `packages/shared` (Types, Zod schemas, constants, tokens), `packages/ui` (Shared design components)  
-**Status:** In Progress (Module 1 Active)
+**GitHub Repository:** [https://github.com/47umair0101/professor-academy](https://github.com/47umair0101/professor-academy)  
+**Status:** In Progress (Module 2 Completed & Pushed, Module 3 Ready)
 
 ---
 
@@ -11,9 +12,9 @@
 
 | # | Module | Scope / Key Deliverables | Status | Smoke Tests | Git Commit |
 |---|---|---|---|---|---|
-| **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic Navy/Gold/Cream palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | Initial Commit |
-| **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | In Progress |
-| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ⚪ Pending | ⚪ Pending | - |
+| **1** | **Monorepo Foundation & Design System Showcase** | Turborepo setup, Academic palette, core UI library, `/design-preview` route | ✅ Completed | ✅ All Passed | `52d06ea` / `9a0b0dc` |
+| **2** | **Database Schema & Supabase Auth** | PostgreSQL schema, RLS, Seed data, Split-Screen Login/Signup/Forgot-Password, RBAC | ✅ Completed | ✅ All Passed | `7a15961` |
+| **3** | **Public Website, Course Catalog & Past Papers Vault** | Home, About, Contact, Course Catalog with Eligibility Criteria, Past Papers PDF Vault | ⚪ Next | ⚪ Pending | - |
 | **4** | **Admin Portal: Dashboard, Teachers & Direct Publish** | Admin KPIs, Teacher provisioning, Commission rate (80/20), Direct publish toggle | ⚪ Pending | ⚪ Pending | - |
 | **5** | **Teacher Portal: Course Builder & Gemini AI Co-Pilot** | Course/Curriculum Builder, YouTube unlisted embeds, Tiptap rich text, Gemini AI Image/Text | ⚪ Pending | ⚪ Pending | - |
 | **6** | **Student Enrollment & Local Fee Verification Queue** | Bank Transfer/JazzCash/Easypaisa payment, Gemini OCR receipt scan, Admin verification queue | ⚪ Pending | ⚪ Pending | - |
