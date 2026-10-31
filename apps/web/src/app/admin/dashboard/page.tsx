@@ -779,15 +779,13 @@ export default function AdminDashboardPage() {
                     </p>
                   </div>
 
-                  <Button
-                    variant="primary"
-                    size="md"
+                  <button
                     onClick={() => setProvisionModalOpen(true)}
-                    className="font-bold text-xs shadow-sm"
+                    className="inline-flex flex-row items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-indigo hover:bg-brand-indigoHover text-white text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.99]"
                   >
-                    <UserPlus className="h-4 w-4 mr-1.5" />
+                    <UserPlus className="h-4 w-4 shrink-0" />
                     <span>+ Provision Faculty Member</span>
-                  </Button>
+                  </button>
                 </div>
 
                 {/* Teachers Table Card */}
@@ -1342,10 +1340,10 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex justify-end gap-2.5 pt-2">
-            <Button variant="secondary" size="sm" type="button" onClick={() => setProvisionModalOpen(false)}>
+            <Button variant="secondary" size="md" type="button" onClick={() => setProvisionModalOpen(false)}>
               Cancel
             </Button>
-            <Button variant="primary" size="sm" type="submit" className="font-bold">
+            <Button variant="primary" size="md" type="submit" className="font-bold py-2.5 px-5 h-auto">
               Provision Faculty Account
             </Button>
           </div>
