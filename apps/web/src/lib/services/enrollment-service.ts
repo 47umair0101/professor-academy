@@ -51,12 +51,39 @@ export class EnrollmentService {
     try {
       const cleanTid = input.transactionId.trim();
 
+      // Ensure valid course UUID mapping for legacy/mock slugs
+      let targetCourseId = input.courseId;
+      if (targetCourseId === 'c-1') targetCourseId = '10000000-0000-0000-0000-000000000001';
+      if (targetCourseId === 'c-2') targetCourseId = '10000000-0000-0000-0000-000000000002';
+      if (targetCourseId === 'c-3') targetCourseId = '10000000-0000-0000-0000-000000000003';
+      if (targetCourseId === 'c-4') targetCourseId = '10000000-0000-0000-0000-000000000004';
+      if (targetCourseId === 'c-5') targetCourseId = '10000000-0000-0000-0000-000000000005';
+      if (targetCourseId === 'c-6') targetCourseId = '10000000-0000-0000-0000-000000000006';
+
+      // Ensure student profile exists in public.profiles (safeguard for student accounts)
+      const { data: profileCheck } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', input.studentId)
+        .maybeSingle();
+
+      if (!profileCheck) {
+        await supabase.from('profiles').insert({
+          id: input.studentId,
+          full_name: 'Student Account',
+          email: `student-${input.studentId.slice(0, 8)}@professoracademy.pk`,
+          role: 'STUDENT',
+          commission_rate: 80,
+          is_active: true,
+        });
+      }
+
       // Check if student already enrolled in this course
       const { data: existingStudentEnrollment } = await supabase
         .from('enrollments')
         .select('id, status, transaction_id')
         .eq('student_id', input.studentId)
-        .eq('course_id', input.courseId)
+        .eq('course_id', targetCourseId)
         .maybeSingle();
 
       if (existingStudentEnrollment) {
@@ -81,7 +108,7 @@ export class EnrollmentService {
             .eq('id', existingStudentEnrollment.id);
 
           if (updateError) {
-            console.error('Failed to update pending enrollment:', updateError);
+            console.error('Failed to update pending enrollment:', updateError.message, updateError.details);
             return { success: false, error: updateError.message };
           }
 
@@ -112,7 +139,7 @@ export class EnrollmentService {
         .from('enrollments')
         .insert({
           student_id: input.studentId,
-          course_id: input.courseId,
+          course_id: targetCourseId,
           status: 'PENDING_VERIFICATION',
           payment_method: input.paymentMethod,
           transaction_id: cleanTid,
@@ -126,19 +153,29 @@ export class EnrollmentService {
         .single();
 
       if (insertError) {
-        console.error('Insert enrollment error:', insertError);
+        console.error(
+          'Insert enrollment error:',
+          insertError.message,
+          insertError.details,
+          insertError.hint,
+          insertError.code
+        );
         return { success: false, error: insertError.message };
       }
 
-      // Create notification for student
-      await supabase.from('notifications').insert({
-        recipient_id: input.studentId,
-        title: 'Fee Receipt Submitted for Verification',
-        message: `Your payment receipt (TID: ${cleanTid}) of PKR ${input.amountPaidPkr.toLocaleString()} has been received. Our administration will verify it within 1-2 hours to unlock your course.`,
-        type: 'FEE_SUBMITTED',
-        link_url: '/student/fees',
-        course_id: input.courseId,
-      });
+      // Create notification for student (best effort)
+      try {
+        await supabase.from('notifications').insert({
+          recipient_id: input.studentId,
+          title: 'Fee Receipt Submitted for Verification',
+          message: `Your payment receipt (TID: ${cleanTid}) of PKR ${input.amountPaidPkr.toLocaleString()} has been received. Our administration will verify it within 1-2 hours to unlock your course.`,
+          type: 'FEE_SUBMITTED',
+          link_url: '/student/fees',
+          course_id: targetCourseId,
+        });
+      } catch (notifErr) {
+        console.warn('Notification insert skipped:', notifErr);
+      }
 
       return { success: true, enrollmentId: inserted.id };
     } catch (err: any) {

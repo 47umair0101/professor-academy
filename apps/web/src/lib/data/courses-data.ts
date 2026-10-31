@@ -53,7 +53,7 @@ export interface CourseData {
 
 export const MOCK_COURSES: CourseData[] = [
   {
-    id: 'c-1',
+    id: '10000000-0000-0000-0000-000000000001',
     slug: 'mdcat-physics-masterclass',
     title: 'MDCAT Physics: Complete High-Yield Prep & Past Paper Shortcuts (2026)',
     subtitle: 'Master 100% of the UHS & PMDC Physics syllabus with 400+ past paper tricks, formula sheets, and mock tests.',
@@ -149,7 +149,7 @@ export const MOCK_COURSES: CourseData[] = [
     ],
   },
   {
-    id: 'c-2',
+    id: '10000000-0000-0000-0000-000000000002',
     slug: 'fsc-chemistry-part-1',
     title: 'FSc Pre-Medical Chemistry Part-1: Organic & Inorganic Concepts',
     subtitle: 'Federal Board & Punjab Board syllabus simplified with animated reaction mechanisms and chapter-wise numericals.',
@@ -225,7 +225,7 @@ export const MOCK_COURSES: CourseData[] = [
     ],
   },
   {
-    id: 'c-3',
+    id: '10000000-0000-0000-0000-000000000003',
     slug: 'ecat-net-advanced-math',
     title: 'ECAT & NUST (NET) Advanced Mathematics: Speed Tricks & Problem Sets',
     subtitle: 'Crush the math section of UET ECAT, NUST NET, FAST, and GIKI with 500+ speed formulas and past papers.',
@@ -289,7 +289,7 @@ export const MOCK_COURSES: CourseData[] = [
     ],
   },
   {
-    id: 'c-4',
+    id: '10000000-0000-0000-0000-000000000004',
     slug: 'cambridge-a-level-biology',
     title: 'Cambridge International A-Level Biology (Paper 4 & 5 Special Prep)',
     subtitle: 'Score an A* with comprehensive coverage of CAIE 9700 syllabus, marking schemes, and practical planning.',
@@ -353,7 +353,7 @@ export const MOCK_COURSES: CourseData[] = [
     ],
   },
   {
-    id: 'c-5',
+    id: '10000000-0000-0000-0000-000000000005',
     slug: 'css-essay-precis-mastery',
     title: 'CSS English Essay & Précis Writing Masterclass (2026 Batch)',
     subtitle: 'Strategic writing blueprint by CSP officers to conquer the highest-failing subjects of the CSS examination.',
@@ -417,7 +417,7 @@ export const MOCK_COURSES: CourseData[] = [
     ],
   },
   {
-    id: 'c-6',
+    id: '10000000-0000-0000-0000-000000000006',
     slug: 'computer-science-fullstack-foundations',
     title: 'Full-Stack Web Development with Next.js 15 & TypeScript',
     subtitle: 'From zero to building full-stack web applications with modern React, Next.js App Router, Tailwind, and Supabase.',
