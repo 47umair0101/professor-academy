@@ -274,82 +274,68 @@ CREATE INDEX IF NOT EXISTS idx_comments_lesson_created ON public.lesson_comments
 CREATE INDEX IF NOT EXISTS idx_notifications_recipient_unread ON public.notifications(recipient_id, is_read, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_past_papers_filters ON public.past_papers(exam_body, exam_year DESC, subject);
 
--- 11. ROW-LEVEL SECURITY (RLS)
+-- 11. ROW-LEVEL SECURITY (RLS) POLICIES
+-- Permissive policies for web & mobile app data operations
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.course_sections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.lesson_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.lesson_comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.past_papers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quizzes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_attempt_answers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.platform_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
--- Profiles Policies
-DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
-CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles
-  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow all operations" ON public.profiles;
+CREATE POLICY "Allow all operations" ON public.profiles FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
-CREATE POLICY "Users can update their own profile" ON public.profiles
-  FOR UPDATE USING (auth.uid() = id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.courses;
+CREATE POLICY "Allow all operations" ON public.courses FOR ALL USING (true) WITH CHECK (true);
 
--- Courses Policies
-DROP POLICY IF EXISTS "Published courses are viewable by everyone" ON public.courses;
-CREATE POLICY "Published courses are viewable by everyone" ON public.courses
-  FOR SELECT USING (status = 'PUBLISHED' OR auth.uid() = teacher_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.course_sections;
+CREATE POLICY "Allow all operations" ON public.course_sections FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Teachers can insert and update their own courses" ON public.courses;
-CREATE POLICY "Teachers can insert and update their own courses" ON public.courses
-  FOR ALL USING (auth.uid() = teacher_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.lessons;
+CREATE POLICY "Allow all operations" ON public.lessons FOR ALL USING (true) WITH CHECK (true);
 
--- Enrollments Policies
-DROP POLICY IF EXISTS "Students can view their own enrollments" ON public.enrollments;
-CREATE POLICY "Students can view their own enrollments" ON public.enrollments
-  FOR SELECT USING (auth.uid() = student_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.enrollments;
+CREATE POLICY "Allow all operations" ON public.enrollments FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Students can create enrollment requests" ON public.enrollments;
-CREATE POLICY "Students can create enrollment requests" ON public.enrollments
-  FOR INSERT WITH CHECK (auth.uid() = student_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.lesson_progress;
+CREATE POLICY "Allow all operations" ON public.lesson_progress FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Admins can view and manage all enrollments" ON public.enrollments;
-CREATE POLICY "Admins can view and manage all enrollments" ON public.enrollments
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles 
-      WHERE id = auth.uid() AND role = 'ADMIN'
-    )
-  );
+DROP POLICY IF EXISTS "Allow all operations" ON public.lesson_comments;
+CREATE POLICY "Allow all operations" ON public.lesson_comments FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Teachers can view enrollments for their courses" ON public.enrollments;
-CREATE POLICY "Teachers can view enrollments for their courses" ON public.enrollments
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.courses 
-      WHERE id = enrollments.course_id AND teacher_id = auth.uid()
-    )
-  );
+DROP POLICY IF EXISTS "Allow all operations" ON public.past_papers;
+CREATE POLICY "Allow all operations" ON public.past_papers FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Students can update own pending enrollments" ON public.enrollments;
-CREATE POLICY "Students can update own pending enrollments" ON public.enrollments
-  FOR UPDATE USING (
-    auth.uid() = student_id AND status = 'PENDING_VERIFICATION'
-  );
+DROP POLICY IF EXISTS "Allow all operations" ON public.quizzes;
+CREATE POLICY "Allow all operations" ON public.quizzes FOR ALL USING (true) WITH CHECK (true);
 
--- Notifications Policies
-DROP POLICY IF EXISTS "Users can view their own notifications" ON public.notifications;
-CREATE POLICY "Users can view their own notifications" ON public.notifications
-  FOR SELECT USING (auth.uid() = recipient_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.quiz_questions;
+CREATE POLICY "Allow all operations" ON public.quiz_questions FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Users can update their own notifications" ON public.notifications;
-CREATE POLICY "Users can update their own notifications" ON public.notifications
-  FOR UPDATE USING (auth.uid() = recipient_id);
+DROP POLICY IF EXISTS "Allow all operations" ON public.quiz_attempts;
+CREATE POLICY "Allow all operations" ON public.quiz_attempts FOR ALL USING (true) WITH CHECK (true);
 
-DROP POLICY IF EXISTS "System and admins can insert notifications" ON public.notifications;
-CREATE POLICY "System and admins can insert notifications" ON public.notifications
-  FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Allow all operations" ON public.quiz_attempt_answers;
+CREATE POLICY "Allow all operations" ON public.quiz_attempt_answers FOR ALL USING (true) WITH CHECK (true);
 
--- Past Papers Policies
-DROP POLICY IF EXISTS "Past papers are viewable by everyone" ON public.past_papers;
-CREATE POLICY "Past papers are viewable by everyone" ON public.past_papers
-  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow all operations" ON public.certificates;
+CREATE POLICY "Allow all operations" ON public.certificates FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow all operations" ON public.platform_settings;
+CREATE POLICY "Allow all operations" ON public.platform_settings FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow all operations" ON public.notifications;
+CREATE POLICY "Allow all operations" ON public.notifications FOR ALL USING (true) WITH CHECK (true);
 
 -- 12. AUTOMATIC PROFILE CREATION TRIGGER
 CREATE OR REPLACE FUNCTION public.handle_new_user()
