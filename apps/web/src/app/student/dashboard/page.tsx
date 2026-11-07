@@ -42,6 +42,7 @@ import { EnrollmentService } from '@/lib/services/enrollment-service';
 import { LessonService } from '@/lib/services/lesson-service';
 import { NotificationService } from '@/lib/services/notification-service';
 import { QuizService } from '@/lib/services/quiz-service';
+import { StudentProfileView } from '@/components/student/student-profile-view';
 
 type NavTab =
   | 'dashboard'
@@ -61,7 +62,7 @@ type NotificationCategory = 'All' | 'Academic' | 'Fees' | 'Quizzes' | 'Classes';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [activeTab, setActiveTab] = React.useState<NavTab>('dashboard');
   const [notificationFilter, setNotificationFilter] = React.useState<NotificationCategory>('All');
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -339,15 +340,19 @@ export default function StudentDashboardPage() {
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer select-none"
               >
-                <div className="h-9 w-9 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100">
-                  {user?.fullName
-                    ? user.fullName
-                        .split(' ')
-                        .map((n) => n[0])
-                        .slice(0, 2)
-                        .join('')
-                        .toUpperCase()
-                    : 'HF'}
+                <div className="h-9 w-9 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100 overflow-hidden">
+                  {user?.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user?.fullName || 'Student'} className="h-full w-full object-cover" />
+                  ) : user?.fullName ? (
+                    user.fullName
+                      .split(' ')
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase()
+                  ) : (
+                    'HF'
+                  )}
                 </div>
                 <div className="hidden sm:flex flex-col text-left">
                   <span className="text-xs font-bold text-slate-900 leading-tight">
@@ -1228,8 +1233,18 @@ export default function StudentDashboardPage() {
               </div>
             )}
 
+            {/* VIEW: STUDENT PROFILE & SECURITY TAB */}
+            {activeTab === 'profile' && user && (
+              <StudentProfileView
+                user={user}
+                onProfileUpdated={(updated) => updateUser(updated)}
+                enrolledCount={enrolledCourses.length}
+                completedCount={enrolledCourses.reduce((acc, c) => acc + (c.completedCount || 0), 0)}
+              />
+            )}
+
             {/* VIEW 3: OTHER TABS PLACEHOLDER (e.g. My Learning, Live Classes, Fee Details) */}
-            {activeTab !== 'dashboard' && activeTab !== 'notifications' && activeTab !== 'my-learning' && activeTab !== 'video-courses' && activeTab !== 'weekend-quiz' && activeTab !== 'mock-tests' && (
+            {activeTab !== 'dashboard' && activeTab !== 'notifications' && activeTab !== 'my-learning' && activeTab !== 'video-courses' && activeTab !== 'weekend-quiz' && activeTab !== 'mock-tests' && activeTab !== 'profile' && (
               <div className="bg-white rounded-2xl border border-slate-200/90 p-8 text-center space-y-3">
                 <div className="h-12 w-12 rounded-xl bg-indigo-50 text-brand-indigo flex items-center justify-center mx-auto">
                   <Sparkles className="h-6 w-6" />

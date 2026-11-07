@@ -32,6 +32,7 @@ interface AuthContextType {
   signup: (data: SignupData) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   demoLogin: (targetRole: UserRole) => void;
+  updateUser: (partial: Partial<AuthUser>) => void;
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -158,6 +159,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     router.push(`/${targetRole.toLowerCase()}/dashboard`);
   };
 
+  const updateUser = (partial: Partial<AuthUser>) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...partial };
+      localStorage.setItem('professor_academy_user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -168,6 +178,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signup,
         logout,
         demoLogin,
+        updateUser,
       }}
     >
       {children}
